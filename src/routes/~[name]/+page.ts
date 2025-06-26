@@ -10,10 +10,12 @@ export async function load({ params, fetch }) {
   if (!res.ok) return error(404, 'author not found');
 
   const author = await res.json();
+  const page = await getPage(api, 1, { id: author.id });
 
   return {
     ...params,
-    page: await getPage(api, 1, { id: author.id }),
+    page,
+    noNotes: !page,
     author: AppContextDataSchema.shape.author.parse(author)
   }
 }

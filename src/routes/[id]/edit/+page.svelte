@@ -5,6 +5,7 @@
   import Composer from '$lib/components/Composer.svelte';
   import Navbar from "$lib/components/Navbar.svelte";
   import { getApp } from "$lib/util/app";
+  import { clientEnv } from '$lib/util/env';
 
   let { data } = $props();
 
@@ -21,6 +22,10 @@
     }
   })
 </script>
+
+<svelte:head>
+  <tite>{clientEnv.PUBLIC_BRAND} - editing #{data.id}</tite>
+</svelte:head>
 
 <Navbar title={me?.name} href={me?.name ? "/~" + me.name : undefined}>
   <Actionbar

@@ -13,7 +13,8 @@
 
 <div
   class={[
-    "prose",
+  "prose",
+    "text-base",
     "prose-strong:text-base",
     "prose-headings:text-base",
     "prose-p:text-base prose-p:m-0",

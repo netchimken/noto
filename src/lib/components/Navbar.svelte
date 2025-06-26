@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { env } from "$env/dynamic/public";
+  import { clientEnv } from '$lib/util/env';
   import type { HTMLAttributes } from "svelte/elements";
 
   interface Props extends HTMLAttributes<HTMLDivElement> {
@@ -14,9 +14,9 @@
   <div class="space-y-1">
     <h1 class="text-xl font-medium">
       {#if href}
-        <a {href}>{title || env.PUBLIC_BRAND || "noto.cx"}</a>
+        <a {href}>{title || clientEnv.PUBLIC_BRAND}</a>
       {:else}
-        {title || env.PUBLIC_BRAND || "noto.cx"}
+        {title || clientEnv.PUBLIC_BRAND}
       {/if}
     </h1>
   </div>

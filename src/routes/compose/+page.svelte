@@ -5,6 +5,7 @@
   import Composer from '$lib/components/Composer.svelte';
   import Navbar from "$lib/components/Navbar.svelte";
   import { getApp } from "$lib/util/app";
+  import { clientEnv } from '$lib/util/env';
 
   const api = initAPI(fetch);
   const app = getApp();
@@ -19,6 +20,10 @@
     }
   })
 </script>
+
+<svelte:head>
+  <title>{clientEnv.PUBLIC_BRAND} - compose</title>
+</svelte:head>
 
 <Navbar title={me?.name} href={me?.name ? "/~" + me.name : undefined}>
   <Actionbar

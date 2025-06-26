@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { afterNavigate } from '$app/navigation';
   import { initAPI } from '$lib/api/client/index.js';
   import Actionbar from "$lib/components/Actionbar.svelte";
   import Navbar from "$lib/components/Navbar.svelte";
@@ -8,6 +7,7 @@
     getApp,
     type AppContextData,
   } from "$lib/util/app.js";
+  import { clientEnv } from '$lib/util/env.js';
   import { getPage } from './util.js';
   import moment from "moment";
 
@@ -22,9 +22,14 @@
   let pageNo = $state(1);
 
   $effect(() => {
-    getPage(api, pageNo, author ? { id: author.id } : { name: data.name }).then(d => page = d);
+    getPage(api, pageNo, author ? { id: author.id } : { name: data.name })
+    .then(d => page = d);
   });
 </script>
+
+<svelte:head>
+  <title>{clientEnv.PUBLIC_BRAND} ~ {data.name}</title>
+</svelte:head>
 
 <Navbar title={"~" + data.name}>
   <Actionbar
@@ -38,7 +43,9 @@
 </Navbar>
 
 <div class="max-w-[560px] h-[80vh] w-full flex flex-col items-center space-y-8 py-8">
-  {#if !page}
+  {#if data.noNotes}
+     <p class="text-muted">author has no notes</p>
+  {:else if !page}
     <p class="text-muted">loading...</p>
   {:else}
     {@const pages = page.pages}

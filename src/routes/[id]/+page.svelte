@@ -5,6 +5,7 @@
   import Markdown from '$lib/components/Markdown.svelte';
   import Navbar from "$lib/components/Navbar.svelte";
   import { getApp } from "$lib/util/app";
+  import { clientEnv } from '$lib/util/env.js';
   import moment from "moment";
 
   const api = initAPI(fetch);
@@ -16,6 +17,10 @@
 
   let author = $derived(app().author);
 </script>
+
+<svelte:head>
+  <title>{clientEnv.PUBLIC_BRAND} - {note.title ? `${note.title} (#${id})` : `#${id}`}</title>
+</svelte:head>
 
 <Navbar
   title={note.authorName}

@@ -6,7 +6,7 @@
   import CodeInput from '$lib/components/CodeInput.svelte';
   import Navbar from "$lib/components/Navbar.svelte";
   import { getApp, AppContextDataSchema } from '$lib/util/app';
-  import { Store } from '$lib/util/store';
+  import { clientEnv } from '$lib/util/env';
 
   const api = initAPI(fetch);
   const app = getApp();
@@ -18,6 +18,10 @@
   let email = $state(page.url.searchParams.get('email'));
   let validation = $state<string | null>(null);
 </script>
+
+<svelte:head>
+  <title>{clientEnv.PUBLIC_BRAND} - login</title>
+</svelte:head>
 
 <Navbar>
   <Actionbar actions={[

@@ -3,6 +3,7 @@
   import Actionbar from '$lib/components/Actionbar.svelte';
   import Navbar from "$lib/components/Navbar.svelte";
   import { getApp } from '$lib/util/app';
+  import { clientEnv } from '$lib/util/env';
 
   const api = initAPI(fetch);
   const app = getApp();
@@ -10,6 +11,10 @@
   let author = $derived(app().author);
   let email = $state<string | 1 | 0>(0);
 </script>
+
+<svelte:head>
+  <title>{clientEnv.PUBLIC_BRAND}</title>
+</svelte:head>
 
 <Navbar>
   <Actionbar 

@@ -107,6 +107,7 @@ const Author = new Hono()
       const availableNoteCount = await prisma.note.count({
         where: name ? { authorName: name } : { authorId: +id }
       });
+      if (availableNoteCount === 0) return c.text("author has no notes", 404)
 
       const pages = Math.ceil(availableNoteCount / count);
 
