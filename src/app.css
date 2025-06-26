@@ -1,0 +1,100 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --color-base: #fff;
+  --color-muted: #a1a1a1;
+
+  --color-primary: #2a2a2a;
+  --color-secondary: #1c1c1c;
+
+  --color-info: #76b6ff;
+  --color-good: #76ff86;
+  --color-warning: #efff76;
+  --color-danger: #ff7676;
+  --color-disabled: #4b4b4b;
+}
+
+@layer base {
+  @font-face {
+    font-family: "Source Code Pro";
+    src: url(/Source_Code_Pro/SourceCodePro-VariableFont_wght.ttf);
+  }
+
+  @font-face {
+    font-family: "Source Code Pro";
+    font-style: italic;
+    src: url(/Source_Code_Pro/SourceCodePro-Italic-VariableFont_wght.ttf);
+  }
+
+  :root {
+    @apply text-base;
+    font-family: "Source Code Pro", Avenir, Helvetica, Arial, sans-serif;
+    line-height: 24px;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+  }
+}
+
+@layer utilities {
+  .scrollbar {
+    scrollbar-width: thin;
+  }
+
+  .scrollbar::-webkit-scrollbar,
+  .scrollbar::-webkit-scrollbar-track {
+    @apply w-1.5;
+    @apply bg-primary;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    @apply w-1;
+    @apply bg-disabled;
+    @apply transition-colors;
+    @apply duration-200;
+    @apply ease-in-out;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-secondary;
+  }
+}
+
+html {
+  @apply m-0;
+  @apply h-full;
+}
+
+body {
+  @apply bg-primary;
+  @apply absolute;
+  @apply w-full;
+  @apply h-full;
+}
+
+input {
+  @apply outline-none;
+  @apply border-b-2;
+  @apply border-b-muted;
+
+  @apply transition-colors;
+  @apply ease-out;
+  @apply duration-200;
+
+  @apply focus:border-b-base;
+}
+
+button {
+  @apply text-muted;
+
+  @apply hover:text-base;
+  @apply hover:cursor-pointer;
+}
+
+button.active {
+  @apply text-base;
+}
