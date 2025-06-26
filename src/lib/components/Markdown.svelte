@@ -25,7 +25,18 @@
   
   {...others}
 >
-  {#await marked(content.replace(/\n{2}(?=\n)/g, '\n\n<br/>\n')) then markedContent}
+  {#await marked
+    .use({
+      renderer: {
+        image({ href, text, title }) {
+          const url = href.startsWith('http') ? href : `images/${href}`; // for external links
+          return `<img src="${url}" alt="${text}" title="${title}" />`;
+        }
+      }
+    })
+    .parse(content.replace(/\n{2}(?=\n)/g, '\n\n<br/>\n'))
+    then markedContent
+  }
     {@html env.PUBLIC_ALLOW_XSS ? markedContent : sanitize(markedContent)}
   {/await}
 </div>
