@@ -13,7 +13,7 @@ export async function load({ params, fetch }) {
 
   return {
     ...params,
-    page: await getPage(1, { id: author.id }),
+    page: await getPage(api, 1, { id: author.id }),
     author: AppContextDataSchema.shape.author.parse(author)
   }
 }

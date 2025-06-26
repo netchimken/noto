@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { initAPI } from '$lib/api/client/index.js';
   import Actionbar from "$lib/components/Actionbar.svelte";
   import Navbar from "$lib/components/Navbar.svelte";
   import Paginator from '$lib/components/Paginator.svelte';
@@ -9,6 +10,7 @@
   import { getPage } from './util.js';
   import moment from "moment";
 
+  const api = initAPI(fetch);
   let { data } = $props();
 
   const app = getApp();
@@ -19,7 +21,7 @@
   let pageNo = $state(1);
 
   $effect(() => {
-    getPage(pageNo, author ? { id: author.id } : { name: data.name }).then(d => page = d);
+    getPage(api, pageNo, author ? { id: author.id } : { name: data.name }).then(d => page = d);
   })
 </script>
 
