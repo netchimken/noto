@@ -2,7 +2,7 @@
 FROM oven/bun:1-debian AS base
 WORKDIR /usr/src/app
 RUN apt-get update -y && apt-get install -y git openssl
-RUN git clone https://github.com/netchimken/noto.git .
+RUN git clone -b release https://github.com/netchimken/noto.git .
 
 # --- Install dev dependencies ---
 FROM base AS install
