@@ -14,11 +14,12 @@
     actions: (Action | undefined | null)[]
   }
 
-  let { actions }: Props = $props();
+  let { actions, class: classes }: Props = $props();
 </script>
 
 <div class={[
-  "flex flex-row space-x-2 text-xs text-muted select-none"
+  "flex flex-row space-x-2 text-xs text-muted select-none",
+  classes
 ]}>
   <p>&lsqb;</p>
   {#each actions as action, i}

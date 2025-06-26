@@ -31,7 +31,7 @@
     actions={data.name === me?.name
       ? [
           { name: "compose", href: "/compose" },
-          // { name: "export", func() {} },
+          { name: "settings", href: "/settings" },
         ]
       : [{ name: "me", href: "/~" + me?.name }]}
   />

@@ -24,7 +24,7 @@
   <Actionbar
     actions={[
       { name: "me", href: "/~" + me?.name },
-      // { name: "settings", href: "/settings" },
+      { name: "settings", href: "/settings" },
     ]}
   />
 </Navbar>
