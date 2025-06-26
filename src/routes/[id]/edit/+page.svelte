@@ -33,7 +33,7 @@
 
 <Composer 
   bind:value
-  {disabled}
+  bind:disabled
 
   onformdata={async e => {
     e.preventDefault();

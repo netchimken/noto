@@ -30,7 +30,7 @@
 </Navbar>
 
 <Composer
-  {disabled}
+  bind:disabled
   bind:value
 
   onformdata={async e => {

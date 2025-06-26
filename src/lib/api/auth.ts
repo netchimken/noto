@@ -66,7 +66,10 @@ const Auth = new Hono()
         from: env.SMTP_SENDER,
         to: email,
         subject: "Sign in to Noto",
-        text: `You requested to sign in to Noto as "${author.name}".\n\nYour one-time code is: ${code}`,
+        text:
+          `You requested to sign in to Noto as "${author.name}".`
+          + `\n\nYour one-time code is: ${code}`
+          + `\n\nThis code will expire in ${ttl} minutes.`
       });
     }
 

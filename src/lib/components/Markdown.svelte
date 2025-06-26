@@ -18,12 +18,13 @@
     "prose-headings:text-base",
     "prose-p:text-base prose-p:m-0",
     "prose-a:text-info prose-a:no-underline prose-a:hover:underline",
+    "prose-li:text-base",
     classes
   ]}
   
   {...others}
 >
-  {#await marked(content) then markedContent}
+  {#await marked(content.replace(/\n(?=\n)/g, "\n<br/>"), { gfm: true }) then markedContent}
     {@html env.PUBLIC_ALLOW_XSS ? markedContent : sanitize(markedContent)}
   {/await}
 </div>

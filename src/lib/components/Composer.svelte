@@ -49,6 +49,7 @@
         <a
           class="text-info hover:underline"
           href="https://www.markdownguide.org/cheat-sheet/"
+          target="_blank"
         >
           markdown
         </a>
