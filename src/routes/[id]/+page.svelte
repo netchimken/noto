@@ -5,8 +5,8 @@
   import Markdown from '$lib/components/Markdown.svelte';
   import Navbar from "$lib/components/Navbar.svelte";
   import { getApp } from "$lib/util/app";
+  import { formatDate } from '$lib/util/date.js';
   import { clientEnv } from '$lib/util/env.js';
-  import moment from "moment";
 
   const api = initAPI(fetch);
   const app = getApp();
@@ -26,10 +26,8 @@
   title={note.authorName}
   href={"/~" + note.authorName}
 >
-  <p class="text-xs text-muted">
-    &lpar;{moment(note.updatedAt ?? note.createdAt).format(
-      "MMM Do YYYY, h:mma",
-    )}&rpar;
+  <p class="text-xs text-muted" title={note.updatedAt ? `edited on ${formatDate(note.updatedAt)}` : undefined}>
+    &lpar;{formatDate(note.createdAt)}{note.updatedAt ? ' - edited' : ''}&rpar;
   </p>
 
   {#if author}
