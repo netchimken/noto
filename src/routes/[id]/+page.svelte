@@ -28,7 +28,7 @@
       actions={note && note.authorName === author.name
         ? [
             { name: "edit", href: '/' + note.id + '/edit' },
-            { name: "delete", func() {} },
+            // { name: "delete", func() {} },
           ]
         : [{ name: "me", href: "/~" + author.name }]}
     />
