@@ -53,8 +53,8 @@
         class="w-full flex flex-row justify-between items-center group"
         href={"/" + note.id}
       >
-        <div class="flex flex-col">
-          <p class="group-hover:underline">{note.title ?? date}</p>
+        <div class="w-[90%] flex flex-col">
+          <p class="w-full pr-6 group-hover:underline text-ellipsis overflow-hidden whitespace-nowrap">{note.title ?? date}</p>
           {#if note.title}<p class="text-xs text-muted">&lpar;{date}&rpar;</p>{/if}
         </div>
 
