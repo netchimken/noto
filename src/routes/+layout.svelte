@@ -7,8 +7,7 @@
     setAppContext,
     type AppContextData,
   } from "$lib/util/app";
-  import { Store } from "$lib/util/store";
-  import { initAPI, key } from "$lib/api/client";
+  import { initAPI } from "$lib/api/client";
   import { page } from "$app/state";
   import { onMount } from "svelte";
 
@@ -22,7 +21,7 @@
   setAppContext(() => app);
 
   const checkAuth = async () => {
-    const res = await key(api.author.me.$get());
+    const res = await api.author.me.$get();
 
     if (res?.ok) {
       app.author = AppContextDataSchema.shape.author.parse(await res.json());

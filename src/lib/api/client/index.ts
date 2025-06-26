@@ -23,22 +23,3 @@ export const initAPI = (fetch: Window['fetch']) => {
 
   return client;
 };
-
-
-export async function key<T extends Promise<U>, U extends ClientResponse<any, any, any>>(req: T, onError?: (res: U) => void) {
-  req.catch(() => console.error("Server didn't respond"));
-
-  const res = await req;
-
-  if (res.status === 401) {
-    goto("/login");
-    return null;
-  }
-
-  if (res.status !== 200) {
-    if (onError) onError(res);
-    return null;
-  }
-
-  return res;
-}
