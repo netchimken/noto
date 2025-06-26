@@ -1,11 +1,10 @@
 import { env } from "$env/dynamic/private";
-import { CryptoHasher } from 'bun';
 import jwt from "jsonwebtoken";
-import { randomBytes } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import { z } from "zod";
 
 export function sha256(...values: string[]) {
-  const hasher = new CryptoHasher("sha256");
+  const hasher = createHash('sha256');
   for (const value of values) hasher.update(value);
 
   return hasher.digest().toString("hex");
