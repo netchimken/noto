@@ -1,21 +1,25 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
+  import { initAPI } from '$lib/api/client/index.js';
   import Actionbar from "$lib/components/Actionbar.svelte";
   import Markdown from '$lib/components/Markdown.svelte';
   import Navbar from "$lib/components/Navbar.svelte";
   import { getApp } from "$lib/util/app";
   import moment from "moment";
 
+  const api = initAPI(fetch);
   const app = getApp();
 
   let { data } = $props();
-  let { note } = data;
+  let id = $derived(data.id);
+  let note = $derived(data.note);
 
   let author = $derived(app().author);
 </script>
 
 <Navbar
-  title={note?.authorName ?? "<unknown>"}
-  href={note ? "/~" + note.authorName : undefined}
+  title={note.authorName}
+  href={"/~" + note.authorName}
 >
   <p class="text-xs text-muted">
     &lpar;{moment(note.updatedAt ?? note.createdAt).format(
@@ -28,7 +32,16 @@
       actions={note && note.authorName === author.name
         ? [
             { name: "edit", href: '/' + note.id + '/edit' },
-            // { name: "delete", func() {} },
+            { name: "delete", async func() {
+              const yes = confirm('are you sure you want to delete this note?');
+
+              if (yes) {
+                const res = await api.note[':id'].$delete({ param: { id } });
+                if (!res.ok) return alert(res.status + res.statusText);
+
+                goto("/~" + note.authorName, { replaceState: true });
+              }
+            } },
           ]
         : [{ name: "me", href: "/~" + author.name }]}
     />
