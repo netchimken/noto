@@ -62,7 +62,7 @@ const Auth = new Hono()
 
       await transporter.verify();
 
-      transporter.sendMail({
+      await transporter.sendMail({
         from: env.SMTP_SENDER,
         to: email,
         subject: "Sign in to Noto",
