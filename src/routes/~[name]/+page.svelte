@@ -7,10 +7,10 @@
     getApp,
     type AppContextData,
   } from "$lib/util/app.js";
+  import { formatDate } from '$lib/util/date.js';
   import { clientEnv } from '$lib/util/env.js';
   import { getPage } from './util.js';
-  import moment from "moment";
-
+  
   const api = initAPI(fetch);
   let { data } = $props();
 
@@ -54,7 +54,7 @@
     <Paginator {pages} bind:page={pageNo} />
 
     {#each notes as note, i}
-      {@const date = moment(note.createdAt).format("MMM Do YYYY, h:mma")}
+      {@const date = formatDate(note.createdAt)}
 
       <a
         class="w-full flex flex-row justify-between items-center group"
