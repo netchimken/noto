@@ -1,50 +1,25 @@
 <script lang="ts">
-  import { initAPI } from "$lib/api/client";
   import Actionbar from "$lib/components/Actionbar.svelte";
   import Navbar from "$lib/components/Navbar.svelte";
   import Paginator from '$lib/components/Paginator.svelte';
   import {
-    AppContextDataSchema,
     getApp,
     type AppContextData,
   } from "$lib/util/app.js";
+  import { getPage } from './util.js';
   import moment from "moment";
 
   let { data } = $props();
 
-  const api = initAPI(fetch);
   const app = getApp();
   const me = $derived(app().author);
 
   let author = $state<AppContextData["author"]>(data.author);
-  const count = 9;
-  let page = $state(1);
-
-  const getPage = async (no: number) => {
-    const res = await api.author[':id'].notes.$get({
-      param: {
-        id: author ? '' + author.id : '~' + data.name
-      },
-      query: {
-        count: '' + count,
-        page: '' + no,
-      },
-    });
-
-    if (res.ok) {
-      const data = await res.json();
-
-      return {
-        notes: data.notes,
-        pages: data.pages,
-      };
-    } else return null;
-  };
-
-  let pagesData = $state<Awaited<ReturnType<typeof getPage>>>();
+  let page = $state(data.page);
+  let pageNo = $state(1);
 
   $effect(() => {
-    getPage(page).then(d => pagesData = d);
+    getPage(pageNo, author ? { id: author.id } : { name: data.name }).then(d => page = d);
   })
 </script>
 
@@ -60,13 +35,13 @@
 </Navbar>
 
 <div class="max-w-[560px] h-[80vh] w-full flex flex-col items-center space-y-8 py-8">
-  {#if !pagesData}
+  {#if !page}
     <p class="text-muted">loading...</p>
   {:else}
-    {@const pages = pagesData.pages}
-    {@const notes = pagesData.notes}
+    {@const pages = page.pages}
+    {@const notes = page.notes}
 
-    <Paginator {pages} bind:page />
+    <Paginator {pages} bind:page={pageNo} />
 
     {#each notes as note, i}
       {@const date = moment(note.createdAt).format("MMM Do YYYY, h:mma")}
