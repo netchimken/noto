@@ -16,6 +16,7 @@
   }: Props = $props();
 
   let words = $state(0);
+  let form!: HTMLFormElement;
   let textarea!: HTMLTextAreaElement;
 
   const onUpdate = (element: HTMLTextAreaElement) => {
@@ -32,11 +33,11 @@
 </script>
 
 <form
+  bind:this={form}
   class={["max-w-[560px] w-[100%] max-h-80% space-y-4", classes]}
-  method="dialog"
   {...others}
 >
-  <div class="flex flex-col items-center space-y-1">
+  <fieldset class="flex flex-col items-center space-y-1">
     <fieldset class="w-full flex flex-row justify-between text-muted">
       <p>{words} words</p>
       <button type="submit">send</button>
@@ -56,7 +57,7 @@
         works here!
       {/if}
     </p>
-  </div>
+  </fieldset>
 
   <textarea
     bind:this={textarea}
