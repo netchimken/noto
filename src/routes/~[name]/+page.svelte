@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { afterNavigate } from '$app/navigation';
   import { initAPI } from '$lib/api/client/index.js';
   import Actionbar from "$lib/components/Actionbar.svelte";
   import Navbar from "$lib/components/Navbar.svelte";
@@ -16,13 +17,13 @@
   const app = getApp();
   const me = $derived(app().author);
 
-  let author = $state<AppContextData["author"]>(data.author);
+  let author = $derived<AppContextData["author"]>(data.author);
   let page = $state(data.page);
   let pageNo = $state(1);
 
   $effect(() => {
     getPage(api, pageNo, author ? { id: author.id } : { name: data.name }).then(d => page = d);
-  })
+  });
 </script>
 
 <Navbar title={"~" + data.name}>

@@ -11,7 +11,7 @@
   const { content, class: classes, ...others }: Props = $props();
 </script>
 
-<div 
+<div
   class={[
     "prose",
     "prose-strong:text-base",
@@ -24,7 +24,7 @@
   
   {...others}
 >
-  {#await marked(content.replace(/\n(?=\n)/g, "\n<br/>"), { gfm: true }) then markedContent}
+  {#await marked(content.replace(/\n{2}(?=\n)/g, '\n\n<br/>\n')) then markedContent}
     {@html env.PUBLIC_ALLOW_XSS ? markedContent : sanitize(markedContent)}
   {/await}
 </div>
