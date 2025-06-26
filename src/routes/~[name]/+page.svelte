@@ -32,14 +32,18 @@
 </svelte:head>
 
 <Navbar title={"~" + data.name}>
-  <Actionbar
-    actions={data.name === me?.name
-      ? [
-          { name: "compose", href: "/compose" },
-          { name: "settings", href: "/settings" },
-        ]
-      : [{ name: "me", href: "/~" + me?.name }]}
-  />
+  {#if me}
+    <Actionbar
+      actions={
+        data.name === me?.name
+        ? [
+            { name: "compose", href: "/compose" },
+            { name: "settings", href: "/settings" },
+          ]
+        : [{ name: "me", href: "/~" + me.name }]
+      }
+    />
+  {/if}
 </Navbar>
 
 <div class="max-w-[560px] h-[80vh] w-full flex flex-col items-center space-y-8 py-8">
