@@ -37,6 +37,14 @@
     .parse(content.replace(/\n{2}(?=\n)/g, '\n\n<br/>\n'))
     then markedContent
   }
-    {@html env.PUBLIC_ALLOW_XSS ? markedContent : sanitize(markedContent)}
+    {@html env.PUBLIC_ALLOW_XSS 
+      ? markedContent 
+      : sanitize(
+        markedContent,
+        {
+          allowedTags: sanitize.defaults.allowedTags.concat([ 'img' ])
+        }
+      )
+    }
   {/await}
 </div>
