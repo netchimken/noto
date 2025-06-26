@@ -1,5 +1,4 @@
 import type { Author, Note } from "@prisma/client";
-import { NoteSchema } from "@prisma/client/zod/index.js";
 import z from "zod";
 
 export const NameRegex = /^([A-Za-z0-9]+)$/;

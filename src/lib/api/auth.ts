@@ -13,7 +13,6 @@ import {
 } from "./util/auth";
 import Guards from "./util/guards";
 import { cleanAuthor } from "./util/parsers";
-import { sha256 } from "hono/utils/crypto";
 import { setCookie } from 'hono/cookie';
 
 const loginSchema = z.object({
