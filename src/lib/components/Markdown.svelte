@@ -39,7 +39,10 @@
         });
       },
     }))
-    .parse(content.replace(/\n{2}(?=\n)/g, '\n\n<br/>\n'))
+    .parse(content
+      .replace(/\n{2}(?=\n)/g, '\n\n<br/>\n') // fix newlines / linebreaks
+      .replace(/(?<=<[\s\S]*)[“”](?=[\s\S]*>)/g, `"`) // replace typographic quotes with neutral quotes in tags
+    )
     then markedContent
   }
     {@html env.PUBLIC_ALLOW_XSS 
