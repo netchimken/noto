@@ -1,7 +1,10 @@
 <script lang="ts">
   import { env } from '$env/dynamic/public';
   import { marked } from "marked";
+  import markedMoreLists from "marked-more-lists";
+  import markedShiki from 'marked-shiki';
   import sanitize from "sanitize-html";
+  import { codeToHtml } from 'shiki';
   import type { HTMLAttributes } from 'svelte/elements';
 
   interface Props extends HTMLAttributes<HTMLDivElement> {
@@ -20,29 +23,34 @@
     "prose-p:text-base prose-p:m-0",
     "prose-a:text-info prose-a:no-underline prose-a:hover:underline",
     "prose-li:text-base",
+    "prose-pre:!bg-secondary",
     classes
   ]}
   
   {...others}
 >
   {#await marked
-    .use({
-      renderer: {
-        image({ href, text, title }) {
-          const url = href.startsWith('http') ? href : `images/${href}`; // for external links
-          return `<img src="${url}" alt="${text}" title="${title}" />`;
-        }
-      }
-    })
+    .use(markedMoreLists())
+    .use(markedShiki({
+      async highlight(code, lang, props) {
+        return await codeToHtml(code, {
+          lang,
+          theme: 'github-dark-dimmed',
+        });
+      },
+    }))
     .parse(content.replace(/\n{2}(?=\n)/g, '\n\n<br/>\n'))
     then markedContent
   }
-    {@html env.PUBLIC_ALLOW_XSS 
+    {@html !env.PUBLIC_ALLOW_XSS 
       ? markedContent 
       : sanitize(
         markedContent,
         {
-          allowedTags: sanitize.defaults.allowedTags.concat([ 'img' ])
+          allowedTags: sanitize.defaults.allowedTags.concat([ 'img' ]),
+          allowedClasses: {
+            hljs: true
+          }
         }
       )
     }

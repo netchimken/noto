@@ -67,6 +67,19 @@
     name="content"
     {disabled}
     
+    onkeydown={(e) => {
+      if (e.key === 'Tab' && e.shiftKey) {
+        e.preventDefault();
+        const element = e.currentTarget;
+
+        /* Ideally this should be used, but it messes up the edit history */
+        //
+        // const [start, end] = [element.selectionStart, element.selectionEnd];
+        // element.setRangeText('\t', start, end, 'end');
+
+        document.execCommand("insertText", false, '\t')
+      }
+    }}
     oninput={(e) => onUpdate(e.currentTarget)}
   ></textarea>
 </form>
