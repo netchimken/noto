@@ -32,7 +32,7 @@
   {#await marked
     .use(markedMoreLists())
     .use(markedShiki({
-      async highlight(code, lang, props) {
+      async highlight(code, lang) {
         return await codeToHtml(code, {
           lang,
           theme: 'github-dark-dimmed',
