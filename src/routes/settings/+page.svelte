@@ -29,7 +29,18 @@
     <div class="w-full flex flex-row justify-between items-center">
       <h1 class="text-lg font-semibold">Account</h1>
       <div class="text-sm">
-        <!-- <button>[ edit name ]</button> -->
+        <button
+          onclick={async () => {
+            const name = prompt("enter a new name");
+
+            if (name) {
+              const res = await api.author.me.name.$patch({ query: { name } });
+              if (!res.ok) return alert(`${res.status} - ${res.statusText}`);
+
+              if (author) author.name = name;
+            }
+          }}
+        >[ edit name ]</button>
         <button
           onclick={async () => {
             const yes = confirm("this action will log you out on all devices");
