@@ -39,7 +39,8 @@ This guide will assume you have at least a basic understanding of these tools, a
 ### Docker
 To proceed, make sure you have [Docker](https://www.docker.com/) installed.
 
-If you don't want to use Docker, skip this section.
+> [!NOTE]
+> If you don't want to use Docker, skip this section.
 
 #### Step 1
 Download the latest image:
@@ -68,9 +69,10 @@ To update the container, run:
 docker pull netchimken/noto:latest
 ```
 
-### Git
+### Bun
 To proceed, make sure you have [Git](https://git-scm.com/) installed.
 
-If you're using Docker, skip this section.
+> [!NOTE]
+> If you're using Docker, skip this section.
 
 [to be written]
