@@ -36,10 +36,10 @@
       actions={
         note && note.authorName === author.name
         ? concatArr<Action>(
-            { name: author.pinned !== note.id ? "pin" : "pinned", 
+            { name: author.pinned !== note.id ? "pin" : "unpin", 
               async func(type) {
-                const unpin = type === 'pinned';
-                const yes = confirm(`are you sure you want to ${unpin ? 'unpin' : 'pin'} this note?`);
+                const unpin = type === 'unpin';
+                const yes = confirm(`are you sure you want to ${type} this note?`);
 
                 if (yes) {
                   const res = await api.author.me.pinned.$patch({ query: { 
