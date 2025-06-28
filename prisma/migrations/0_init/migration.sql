@@ -38,3 +38,4 @@ CREATE UNIQUE INDEX "Author_id_name_key" ON "Author"("id", "name");
 
 -- AddForeignKey
 ALTER TABLE "Note" ADD CONSTRAINT "Note_authorId_authorName_fkey" FOREIGN KEY ("authorId", "authorName") REFERENCES "Author"("id", "name") ON DELETE RESTRICT ON UPDATE CASCADE;
+
