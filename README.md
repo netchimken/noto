@@ -16,7 +16,7 @@ However, everything you'd expect from a simple blogging site is here and ready t
 Noto can be installed and run in two ways.<br/>
 Either using Docker, or downloading it directly from GitHub and using Bun.
 
-Using Docker is recommended since it makes running and updating this really easy, but each to their own.
+Using Docker is recommended since it makes running and updating this really easy, but to each their own.
 
 ### Prerequisites
 - [PostgreSQL](https://www.postgresql.org/)
