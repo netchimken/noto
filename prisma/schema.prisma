@@ -1,16 +1,10 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 generator zod {
-  provider          = "zod-prisma-types"
-  output            = "../node_modules/@prisma/client/zod"
+  provider = "zod-prisma-types"
+  output   = "../node_modules/@prisma/client/zod"
 }
 
 datasource db {
@@ -19,29 +13,25 @@ datasource db {
 }
 
 model Note {
-  id          Int       @id @default(autoincrement())
-  content     String
-
-  createdAt   DateTime  @default(now()) @db.Timestamptz(3)
-  updatedAt   DateTime? @db.Timestamptz(3)
-
-  author      Author    @relation(fields: [authorId, authorName], references: [id, name])
-  authorId    Int
-  authorName  String
+  id         Int       @id @default(autoincrement())
+  content    String
+  createdAt  DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt  DateTime? @db.Timestamptz(3)
+  authorId   Int
+  authorName String
+  author     Author    @relation(fields: [authorId, authorName], references: [id, name])
 }
 
 model Author {
-  id        Int       @id @default(autoincrement())
-  name      String    @unique
-
-  notes     Note[]
-  pinned    Int?
-
-  admin     Boolean?
-  joinedAt  DateTime  @default(now()) @db.Timestamptz(3)
-  loginAt   DateTime? @db.Timestamptz(3)
-  email     String?   @unique
-  secret    String    @unique
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  pinned   Int?
+  admin    Boolean?
+  joinedAt DateTime  @default(now()) @db.Timestamptz(3)
+  loginAt  DateTime? @db.Timestamptz(3)
+  email    String?   @unique
+  secret   String    @unique
+  notes    Note[]
 
   @@unique([id, name])
 }
