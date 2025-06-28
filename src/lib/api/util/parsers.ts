@@ -19,6 +19,6 @@ export function cleanAuthor(author: Author) {
 export function populateNote(note: Note) {
   return {
     ...note,
-    title: note.content.match(/^(#{1,3}(?!#) [ \S]+)/)?.at(0)?.replace(/#{1,3}/, '') ?? null
+    title: note.content.match(/^(#{1,3}(?!#) [^\s][ \S]*)/)?.at(0)?.replace(/#{1,3}/, '') ?? null
   }
 }
