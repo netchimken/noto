@@ -23,7 +23,8 @@
     "prose-p:text-base prose-p:m-0",
     "prose-a:text-info prose-a:no-underline prose-a:hover:underline",
     "prose-li:text-base",
-    "prose-pre:!bg-secondary",
+    "prose-pre:!bg-secondary prose-pre:[&>code]:p-0",
+    "prose-code:bg-secondary prose-code:text-base prose-code:rounded prose-code:py-1 prose-code:px-2 prose-code:before:content-none prose-code:after:content-none",
     classes
   ]}
   
@@ -53,10 +54,10 @@
           allowedTags: sanitize.defaults.allowedTags.concat([ 'img' ]),
           allowedAttributes: {
             ...sanitize.defaults.allowedAttributes,
-            span: ['style']
+            span: ['style'],
           },
           allowedStyles: {
-            span: {
+            '*': {
               color: [/^#(0x)?[0-9a-f]+$/i, /^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/]
             }
           }
