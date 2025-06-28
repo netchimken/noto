@@ -37,6 +37,6 @@
   afterNavigate(checkAuth);
 </script>
 
-<div class="w-full h-full px-8 flex flex-col items-center">
+<div class="w-full h-auto px-8 pb-8 flex flex-col items-center">
   {@render children()}
 </div>

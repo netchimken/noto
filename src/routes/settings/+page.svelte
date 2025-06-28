@@ -28,6 +28,7 @@
   <div class="max-w-[500px] h-[80vh] w-full flex flex-col items-center space-y-8 py-8">
     <div class="w-full flex flex-row justify-between items-center">
       <h1 class="text-lg font-semibold">Account</h1>
+
       <div class="text-sm">
         <button
           onclick={async () => {
@@ -41,6 +42,7 @@
             }
           }}
         >[ edit name ]</button>
+
         <button
           onclick={async () => {
             const yes = confirm("this action will log you out on all devices");
@@ -56,5 +58,27 @@
         >[ logout ]</button>
       </div>
     </div>
+
+    {#if author.admin}
+      <div class="w-full flex flex-row justify-between items-center">
+        <h1 class="text-lg font-semibold">Admin</h1>
+
+        <div class="text-sm">
+          <button
+            onclick={async () => {
+              const email = prompt("enter an email");
+              const name = prompt("enter a name");
+
+              if (email && name) {
+                const res = await api.author.create.$post({ query: { email, name } });
+                if (!res.ok) return alert(`${res.status} - ${res.statusText}`);
+
+                alert(`created user '${name}' with email '${email}'`);
+              }
+            }}
+          >[ create author ]</button>
+        </div>
+      </div>
+    {/if}
   </div>
 {/if}
