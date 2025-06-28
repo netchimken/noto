@@ -1,4 +1,4 @@
-import { initAPI } from '$lib/api/client/index.js';
+import { initAPI, type APIClient } from '$lib/api/client/index.js';
 import { AppContextDataSchema } from '$lib/util/app.js';
 import { error } from '@sveltejs/kit';
 import { getPage } from './util.js';
@@ -6,16 +6,17 @@ import { getPage } from './util.js';
 export async function load({ params, fetch }) {
   const api = initAPI(fetch);
 
-  const res = await api.author[':id'].$get({ param: { id: '~' + params.name } });
-  if (!res.ok) return error(404, 'author not found');
-
-  const author = await res.json();
-  const page = await getPage(api, 1, { id: author.id });
+  const page = await getPage(api, 1, { name: params.name });
+  if (!page) return error(404, 'author not found');
 
   return {
     ...params,
-    page,
+    page: {
+      notes: page.notes,
+      pages: page.pages
+    },
+    pinned: page.pinned,
     noNotes: !page,
-    author: AppContextDataSchema.shape.author.parse(author)
+    author: AppContextDataSchema.shape.author.parse(page.author),
   }
 }

@@ -5,6 +5,8 @@ import { hc, type ClientResponse } from 'hono/client';
 
 // reference: https://dev.to/bop/using-hono-with-sveltekit-full-type-safety-with-rpc-2h7
 
+export type APIClient = ReturnType<typeof hc<API>>;
+
 let browserClient: ReturnType<typeof hc<API>>;
 
 export const initAPI = (fetch: Window['fetch']) => {

@@ -1,6 +1,26 @@
 <script lang="ts">
   import { page } from '$app/state';
+  import Actionbar from '$lib/components/Actionbar.svelte';
+  import Navbar from '$lib/components/Navbar.svelte';
+  import { getApp } from '$lib/util/app';
+
+  const app = getApp();
+
+  let me = $derived(app().author);
 </script>
+
+<Navbar title={me?.name} href={me?.name ? "/~" + me.name : undefined}>
+  <Actionbar
+    actions={
+      me
+      ? [
+        { name: "me", href: "/~" + me?.name },
+        { name: "settings", href: "/settings" },
+      ]
+      : [{ name: "home", href: '/' }]
+    }
+  />
+</Navbar>
 
 <div class="h-[80vh] flex flex-col justify-center items-center">
   <h1 class="text-2xl">{page.status}</h1>

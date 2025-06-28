@@ -1,12 +1,13 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { initAPI } from '$lib/api/client/index.js';
-  import Actionbar from "$lib/components/Actionbar.svelte";
+  import Actionbar, { type Action } from "$lib/components/Actionbar.svelte";
   import Markdown from '$lib/components/Markdown.svelte';
   import Navbar from "$lib/components/Navbar.svelte";
   import { getApp } from "$lib/util/app";
   import { formatDate } from '$lib/util/date.js';
   import { clientEnv } from '$lib/util/env.js';
+  import { concatArr } from '$lib/util/helpers.js';
 
   const api = initAPI(fetch);
   const app = getApp();
@@ -32,20 +33,39 @@
 
   {#if author}
     <Actionbar
-      actions={note && note.authorName === author.name
-        ? [
+      actions={
+        note && note.authorName === author.name
+        ? concatArr<Action>(
+            { name: author.pinned !== note.id ? "pin" : "pinned", 
+              async func(type) {
+                const unpin = type === 'pinned';
+                const yes = confirm(`are you sure you want to ${unpin ? 'unpin' : 'pin'} this note?`);
+
+                if (yes) {
+                  const res = await api.author.me.pinned.$patch({ query: { 
+                    id: unpin ? undefined : '' + note.id 
+                  }});
+                  if (!res.ok) return alert(res.status + res.statusText);
+
+                  // update local author
+                  author.pinned = unpin ? null : note.id;
+                }
+              } 
+            },
             { name: "edit", href: '/' + note.id + '/edit' },
-            { name: "delete", async func() {
-              const yes = confirm('are you sure you want to delete this note?');
+            { name: "delete", 
+              async func() {
+                const yes = confirm('are you sure you want to delete this note?');
 
-              if (yes) {
-                const res = await api.note[':id'].$delete({ param: { id } });
-                if (!res.ok) return alert(res.status + res.statusText);
+                if (yes) {
+                  const res = await api.note[':id'].$delete({ param: { id } });
+                  if (!res.ok) return alert(res.status + res.statusText);
 
-                goto("/~" + note.authorName, { replaceState: true });
-              }
-            } },
-          ]
+                  goto("/~" + note.authorName, { replaceState: true });
+                }
+              } 
+            },
+          )
         : [{ name: "me", href: "/~" + author.name }]}
     />
   {/if}

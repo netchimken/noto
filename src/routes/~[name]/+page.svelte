@@ -9,6 +9,7 @@
   } from "$lib/util/app.js";
   import { formatDate } from '$lib/util/date.js';
   import { clientEnv } from '$lib/util/env.js';
+  import { type ArrayType } from '$lib/util/helpers.js';
   import { getPage } from './util.js';
   
   const api = initAPI(fetch);
@@ -18,12 +19,13 @@
   const me = $derived(app().author);
 
   let author = $derived<AppContextData["author"]>(data.author);
-  let page = $state(data.page);
+  let pinned = $derived(data.pinned);
+  let page = $derived(data.page);
   let pageNo = $state(1);
 
   $effect(() => {
     getPage(api, pageNo, author ? { id: author.id } : { name: data.name })
-    .then(d => page = d);
+    .then(p => p ? page = { pages: p.pages, notes: p.notes } : null);
   });
 </script>
 
@@ -55,9 +57,7 @@
     {@const pages = page.pages}
     {@const notes = page.notes}
 
-    <Paginator {pages} bind:page={pageNo} />
-
-    {#each notes as note, i}
+    {#snippet noteCard(note: ArrayType<typeof notes>, showDate?: boolean)}
       {@const date = formatDate(note.createdAt)}
 
       <a
@@ -66,11 +66,24 @@
       >
         <div class="w-[90%] flex flex-col">
           <p class="w-full pr-6 group-hover:underline text-ellipsis overflow-hidden whitespace-nowrap">{note.title ?? date}</p>
-          {#if note.title}<p class="text-xs text-muted">&lpar;{date}&rpar;</p>{/if}
+          {#if showDate && note.title}<p class="text-xs text-muted">&lpar;{date}&rpar;</p>{/if}
         </div>
 
         <p class="text-muted">#{note.id}</p>
       </a>
+    {/snippet}
+
+    {#if pinned}
+      <div class="w-full space-x-1">
+        <p class="text-sm text-muted">pinned</p>
+        {@render noteCard(pinned)}
+      </div>
+    {/if}
+
+    <Paginator {pages} bind:page={pageNo} />
+
+    {#each notes as note, i}
+      {@render noteCard(note, true)}
     {/each}
   {/if}
 </div>

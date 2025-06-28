@@ -11,12 +11,6 @@ export const getPage = async (api: ReturnType<typeof initAPI>, no: number, autho
     },
   });
 
-  if (res.ok) {
-    const data = await res.json();
-
-    return {
-      notes: data.notes,
-      pages: data.pages,
-    };
-  } else return null;
+  if (res.ok) return await res.json();
+  else return null;
 };

@@ -35,17 +35,37 @@ const Author = new Hono()
       return c.json(cleanAuthor(author));
     })
 
-    .patch("/name", zValidator("query", nameSchema), async (c) => {
-      const { id, name: oldName } = c.get("author");
-      const { name } = c.req.valid("query");
+    .patch("/name",
+      zValidator("query", nameSchema),
+      async (c) => {
+        const { id, name: oldName } = c.get("author");
+        const { name } = c.req.valid("query");
 
-      const author = await prisma.author.update({
-        where: { id },
-        data: { name },
-      });
+        const author = await prisma.author.update({
+          where: { id },
+          data: { name },
+        });
 
-      return c.text(`updated name: '${oldName}' -> '${author.name}'`);
-    })
+        return c.text(`updated name: '${oldName}' -> '${author.name}'`);
+      }
+    )
+
+    .patch("/pinned",
+      zValidator("query", z.object({
+        id: z.string().optional().transform(s => s ? +s : null).pipe(z.number().nullable())
+      })),
+      async (c) => {
+        const { id: authorId, pinned } = c.get("author");
+        const { id: noteId } = c.req.valid("query");
+
+        await prisma.author.update({
+          where: { id: authorId },
+          data: { pinned: noteId }
+        });
+
+        return c.text(`changed pin from '${pinned ?? 'none'}' to '${noteId ?? 'none'}'`);
+      }
+    )
   )
 
   .post("/create",
@@ -125,9 +145,15 @@ const Author = new Hono()
       });
       if (!author) return c.text("author not found", 404);
 
+      const pinned =
+        !author.pinned
+          ? null
+          : await prisma.note.findUnique({ where: { id: author.pinned } });
+
       return c.json({
         author: cleanAuthor(author),
         notes: author.notes.map(n => populateNote(n)),
+        pinned: pinned ? populateNote(pinned) : null,
         pages: pages
       });
     }

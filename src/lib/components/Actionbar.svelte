@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { HTMLAttributes } from 'svelte/elements';
 
-  type Action = {
+  export type Action = {
     name: string
     class?: HTMLAttributes<HTMLDivElement>['class']
   } & (
