@@ -19,9 +19,14 @@ Either using Docker, or downloading it directly from GitHub and using Bun.
 Using Docker is recommended since it makes running and updating this really easy, but each to their own.
 
 ### Prerequisites
-Before you continue, make sure you have:
-- [Docker](https://www.docker.com/) or [Git](https://git-scm.com/)
 - [PostgreSQL](https://www.postgresql.org/)
+
+Using Docker? Install:
+- [Docker](https://www.docker.com/)
+
+Using Bun? Install:
+- [Git](https://git-scm.com/)
+- [Bun](https://bun.sh/)
 
 This guide will assume you have at least a basic understanding of these tools, and know how to use a terminal.
 
