@@ -10,7 +10,7 @@ namespace Guards {
       author: Author
     }
   }>(async (c, next) => {
-    const authorization = getCookie(c, 'noto-token');
+    const authorization = getCookie(c, 'noto-token') ?? c.req.header('Authorization');
     if (!authorization) return c.text("invalid authorization", 401);
 
     const token = authorization.replace("Bearer ", "");
