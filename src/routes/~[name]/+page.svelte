@@ -3,6 +3,8 @@
   import Actionbar from "$lib/components/Actionbar.svelte";
   import Navbar from "$lib/components/Navbar.svelte";
   import Paginator from '$lib/components/Paginator.svelte';
+  import { Marked } from "marked";
+  import sanitize from "sanitize-html";
   import {
     getApp,
     type AppContextData,
@@ -26,6 +28,21 @@
     getPage(api, pageNo, author ? { id: author.id } : { name: data.name })
     .then(p => p ? page = { pages: p.pages, notes: p.notes } : null);
   });
+
+  const parseTitle = (title: string) => {
+    return sanitize(
+      new Marked().parse(title, { async: false }),
+      {
+        allowedTags: ['span', 'code'],
+        allowedAttributes: { span: ['style'] },
+        allowedStyles: {
+          '*': {
+            color: [/^#(0x)?[0-9a-f]+$/i, /^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/]
+          }
+        }
+      }
+    )
+  }
 </script>
 
 <svelte:head>
@@ -65,7 +82,9 @@
           class="w-full flex flex-row justify-between items-center group"
           href={"/" + pinned.id}
         >
-          <p class="w-full group-hover:underline text-ellipsis overflow-hidden whitespace-nowrap">{pinned.title ?? date}</p>
+          <p class="markdown w-full group-hover:underline text-ellipsis overflow-hidden whitespace-nowrap">
+            {@html pinned.title ? parseTitle(pinned.title) : date}
+          </p>
         </a>
       </div>
     {/if}
@@ -80,7 +99,9 @@
         href={"/" + note.id}
       >
         <div class="w-[90%] flex flex-col">
-          <p class="w-full pr-6 group-hover:underline text-ellipsis overflow-hidden whitespace-nowrap">{note.title ?? date}</p>
+          <p class="markdown w-full pr-6 group-hover:underline text-ellipsis overflow-hidden whitespace-nowrap">
+            {@html note.title ? parseTitle(note.title) : date}
+          </p>
           {#if note.title}<p class="text-xs text-muted">&lpar;{date}&rpar;</p>{/if}
         </div>
 
