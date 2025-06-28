@@ -152,7 +152,7 @@ const Author = new Hono()
 
       return c.json({
         author: cleanAuthor(author),
-        notes: author.notes.map(n => populateNote(n)),
+        notes: author.notes.map(n => populateNote(n)).filter(n => n.id !== author.pinned),
         pinned: pinned ? populateNote(pinned) : null,
         pages: pages
       });
