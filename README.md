@@ -13,7 +13,8 @@ However, everything you'd expect from a simple blogging site is here and ready t
 <img width="45%" alt="Edit Note Page" src="docs/images/edit.png">
 
 ## Installation
-Noto can be installed and run in two ways. Either using Docker, or downloading it directly from GitHub and using Bun.
+Noto can be installed and run in two ways.<br/>
+Either using Docker, or downloading it directly from GitHub and using Bun.
 
 Using Docker is recommended since it makes running and updating this really easy, but each to their own.
 
