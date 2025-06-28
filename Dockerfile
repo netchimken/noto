@@ -32,4 +32,4 @@ COPY --from=prerelease /usr/src/app/package.json .
 
 USER bun
 EXPOSE 3000
-ENTRYPOINT ["bun", "run", "build/index.js"]
+ENTRYPOINT ["bun", "start"]
