@@ -16,7 +16,8 @@
 
 <div
   class={[
-  "prose",
+    "wrap-break-word",
+    "prose",
     "text-base",
     "prose-strong:text-base",
     "prose-headings:text-base",

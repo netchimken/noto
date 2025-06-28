@@ -9,7 +9,6 @@
   } from "$lib/util/app.js";
   import { formatDate } from '$lib/util/date.js';
   import { clientEnv } from '$lib/util/env.js';
-  import { type ArrayType } from '$lib/util/helpers.js';
   import { getPage } from './util.js';
   
   const api = initAPI(fetch);
@@ -57,7 +56,23 @@
     {@const pages = page.pages}
     {@const notes = page.notes}
 
-    {#snippet noteCard(note: ArrayType<typeof notes>, isPinned?: boolean)}
+    {#if pinned}
+      {@const date = formatDate(pinned.createdAt)}
+
+      <div class="w-full space-x-1">
+        <p class="text-sm text-muted">pinned</p>
+        <a
+          class="w-full flex flex-row justify-between items-center group"
+          href={"/" + pinned.id}
+        >
+          <p class="w-full group-hover:underline text-ellipsis overflow-hidden whitespace-nowrap">{pinned.title ?? date}</p>
+        </a>
+      </div>
+    {/if}
+
+    <Paginator {pages} bind:page={pageNo} />
+
+    {#each notes as note, i}
       {@const date = formatDate(note.createdAt)}
 
       <a
@@ -66,26 +81,11 @@
       >
         <div class="w-[90%] flex flex-col">
           <p class="w-full pr-6 group-hover:underline text-ellipsis overflow-hidden whitespace-nowrap">{note.title ?? date}</p>
-          {#if !isPinned && note.title}<p class="text-xs text-muted">&lpar;{date}&rpar;</p>{/if}
+          {#if note.title}<p class="text-xs text-muted">&lpar;{date}&rpar;</p>{/if}
         </div>
 
-        {#if !isPinned}
-          <p class="text-muted">#{note.id}</p>
-        {/if}
+        <p class="text-muted">#{note.id}</p>
       </a>
-    {/snippet}
-
-    {#if pinned}
-      <div class="w-full space-x-1">
-        <p class="text-sm text-muted">pinned</p>
-        {@render noteCard(pinned, true)}
-      </div>
-    {/if}
-
-    <Paginator {pages} bind:page={pageNo} />
-
-    {#each notes as note, i}
-      {@render noteCard(note)}
     {/each}
   {/if}
 </div>
