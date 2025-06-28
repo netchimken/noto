@@ -11,7 +11,8 @@
   } from "$lib/util/app.js";
   import { formatDate } from '$lib/util/date.js';
   import { clientEnv } from '$lib/util/env.js';
-  import { getPage } from './util.js';
+  import { getPage } from '$lib/util/notes.js';
+  import NotePanel from '$lib/components/NotePanel.svelte';
   
   const api = initAPI(fetch);
   let { data } = $props();
@@ -56,19 +57,22 @@
         data.name === me?.name
         ? [
             { name: "compose", href: "/compose" },
-            { name: "settings", href: "/settings" },
+            { name: "home", href: "/" },
           ]
-        : [{ name: "me", href: "/~" + me.name }]
+        : [
+          { name: "home", href: "/" },
+          { name: "me", href: "/~" + me.name },
+        ]
       }
     />
   {/if}
 </Navbar>
 
 <div class="max-w-[560px] h-[80vh] w-full flex flex-col items-center space-y-8 py-8">
-  {#if data.noNotes}
-     <p class="text-muted">author has no notes</p>
-  {:else if !page}
+  {#if !page}
     <p class="text-muted">loading...</p>
+  {:else if page.pages === 0}
+    <p class="text-muted">author has no notes</p>
   {:else}
     {@const pages = page.pages}
     {@const notes = page.notes}
@@ -92,21 +96,7 @@
     <Paginator {pages} bind:page={pageNo} />
 
     {#each notes as note, i}
-      {@const date = formatDate(note.createdAt)}
-
-      <a
-        class="w-full flex flex-row justify-between items-center group"
-        href={"/" + note.id}
-      >
-        <div class="w-[90%] flex flex-col">
-          <p class="markdown w-full pr-6 group-hover:underline text-ellipsis overflow-hidden whitespace-nowrap">
-            {@html note.title ? parseTitle(note.title) : date}
-          </p>
-          {#if note.title}<p class="text-xs text-muted">&lpar;{date}&rpar;</p>{/if}
-        </div>
-
-        <p class="text-muted">#{note.id}</p>
-      </a>
+      <NotePanel {note} />
     {/each}
   {/if}
 </div>

@@ -15,23 +15,28 @@ datasource db {
 model Note {
   id         Int       @id @default(autoincrement())
   content    String
+  tags       String[]
+
   createdAt  DateTime  @default(now()) @db.Timestamptz(3)
   updatedAt  DateTime? @db.Timestamptz(3)
+
   authorId   Int
-  authorName String
-  author     Author    @relation(fields: [authorId, authorName], references: [id, name])
+  author     Author    @relation(fields: [authorId], references: [id])
 }
 
 model Author {
   id       Int       @id @default(autoincrement())
   name     String    @unique
+
+  notes    Note[]
   pinned   Int?
-  admin    Boolean?
+
   joinedAt DateTime  @default(now()) @db.Timestamptz(3)
   loginAt  DateTime? @db.Timestamptz(3)
+
   email    String?   @unique
   secret   String    @unique
-  notes    Note[]
+  admin    Boolean?
 
   @@unique([id, name])
 }

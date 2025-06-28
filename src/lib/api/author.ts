@@ -113,50 +113,6 @@ const Author = new Hono()
 
       return c.json(cleanAuthor(author));
     }
-  )
-
-  .get("/:id/notes",
-    zValidator('param', idSchema),
-    zValidator("query", notesSchema),
-    async (c) => {
-      const { id } = c.req.valid('param');
-      const name = id.startsWith('~') ? id.substring(1) : null;
-
-      const { count, page } = c.req.valid("query");
-
-      const availableNoteCount = await prisma.note.count({
-        where: name ? { authorName: name } : { authorId: +id }
-      });
-      if (availableNoteCount === 0) return c.text("author has no notes", 404)
-
-      const pages = Math.ceil(availableNoteCount / count);
-
-      const author = await prisma.author.findUnique({
-        where: name ? { name } : { id: +id },
-        include: {
-          notes: {
-            orderBy: { id: "desc" },
-            skip: (page > 0 && page <= pages)
-              ? (page - 1) * count
-              : (pages - 1) * count,
-            take: count,
-          },
-        },
-      });
-      if (!author) return c.text("author not found", 404);
-
-      const pinned =
-        !author.pinned
-          ? null
-          : await prisma.note.findUnique({ where: { id: author.pinned } });
-
-      return c.json({
-        author: cleanAuthor(author),
-        notes: author.notes.map(n => populateNote(n)).filter(n => n.id !== author.pinned),
-        pinned: pinned ? populateNote(pinned) : null,
-        pages: pages
-      });
-    }
   );
 
 export default Author;

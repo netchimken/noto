@@ -1,7 +1,7 @@
-import type { Author, Note } from "@prisma/client";
+import type { Author, Note, Prisma } from "@prisma/client";
 import z from "zod";
 
-export const NameRegex = /^([A-Za-z0-9]+)$/;
+export const NameRegex = /^([\w]+)$/;
 
 const CleanAuthorSchema = z.object({
   id: z.number(),
@@ -16,9 +16,12 @@ export function cleanAuthor(author: Author) {
   return CleanAuthorSchema.parse(author);
 }
 
-export function populateNote(note: Note) {
+export function populateNote(note: Prisma.NoteGetPayload<{ include: { author: { select: { name: true } } } }>) {
   return {
     ...note,
+    author: {
+      name: note.author.name
+    },
     title: note.content.match(/^(#{1,3}(?!#) [^\s][ \S]*)/)?.at(0)?.replace(/#{1,3}/, '') ?? null
   }
 }

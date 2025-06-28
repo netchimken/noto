@@ -16,7 +16,7 @@
   let id = $derived(data.id);
   let note = $derived(data.note);
 
-  let author = $derived(app().author);
+  let me = $derived(app().author);
 </script>
 
 <svelte:head>
@@ -24,19 +24,19 @@
 </svelte:head>
 
 <Navbar
-  title={note.authorName}
-  href={"/~" + note.authorName}
+  title={note.author.name}
+  href={"/~" + note.author}
 >
   <p class="text-xs text-muted" title={note.updatedAt ? `edited on ${formatDate(note.updatedAt)}` : undefined}>
     &lpar;{formatDate(note.createdAt)}{note.updatedAt ? ' - edited' : ''}&rpar;
   </p>
 
-  {#if author}
+  {#if me}
     <Actionbar
       actions={
-        note && note.authorName === author.name
+        note && note.author.name === me.name
         ? concatArr<Action>(
-            { name: author.pinned !== note.id ? "pin" : "unpin", 
+            { name: me.pinned !== note.id ? "pin" : "unpin", 
               async func(type) {
                 const unpin = type === 'unpin';
                 const yes = confirm(`are you sure you want to ${type} this note?`);
@@ -48,7 +48,7 @@
                   if (!res.ok) return alert(res.status + res.statusText);
 
                   // update local author
-                  author.pinned = unpin ? null : note.id;
+                  me.pinned = unpin ? null : note.id;
                 }
               } 
             },
@@ -61,12 +61,12 @@
                   const res = await api.note[':id'].$delete({ param: { id } });
                   if (!res.ok) return alert(res.status + res.statusText);
 
-                  goto("/~" + note.authorName, { replaceState: true });
+                  goto("/~" + note.author.name, { replaceState: true });
                 }
               } 
             },
           )
-        : [{ name: "me", href: "/~" + author.name }]}
+        : [{ name: "me", href: "/~" + me.name }]}
     />
   {/if}
 </Navbar>

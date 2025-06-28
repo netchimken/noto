@@ -1,7 +1,7 @@
-import { initAPI, type APIClient } from '$lib/api/client/index.js';
+import { initAPI } from '$lib/api/client/index.js';
 import { AppContextDataSchema } from '$lib/util/app.js';
+import { getPage } from '$lib/util/notes.js';
 import { error } from '@sveltejs/kit';
-import { getPage } from './util.js';
 
 export async function load({ params, fetch }) {
   const api = initAPI(fetch);
@@ -16,7 +16,6 @@ export async function load({ params, fetch }) {
       pages: page.pages
     },
     pinned: page.pinned,
-    noNotes: !page,
     author: AppContextDataSchema.shape.author.parse(page.author),
   }
 }
