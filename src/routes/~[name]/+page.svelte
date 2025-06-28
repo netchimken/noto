@@ -33,7 +33,7 @@
     return sanitize(
       new Marked().parse(title, { async: false }),
       {
-        allowedTags: ['span', 'code'],
+        allowedTags: ['span', 'code', 'b', 'i'],
         allowedAttributes: { span: ['style'] },
         allowedStyles: {
           '*': {
