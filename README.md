@@ -70,7 +70,7 @@ docker pull netchimken/noto:latest
 ```
 
 ### Bun
-To proceed, make sure you have [Git](https://git-scm.com/) installed.
+To proceed, make sure you have [Git](https://git-scm.com/) and [Bun](https://bun.sh/) installed.
 
 > [!NOTE]
 > If you're using Docker, skip this section.
