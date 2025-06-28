@@ -57,7 +57,7 @@
     {@const pages = page.pages}
     {@const notes = page.notes}
 
-    {#snippet noteCard(note: ArrayType<typeof notes>, showDate?: boolean)}
+    {#snippet noteCard(note: ArrayType<typeof notes>, isPinned?: boolean)}
       {@const date = formatDate(note.createdAt)}
 
       <a
@@ -66,24 +66,26 @@
       >
         <div class="w-[90%] flex flex-col">
           <p class="w-full pr-6 group-hover:underline text-ellipsis overflow-hidden whitespace-nowrap">{note.title ?? date}</p>
-          {#if showDate && note.title}<p class="text-xs text-muted">&lpar;{date}&rpar;</p>{/if}
+          {#if !isPinned && note.title}<p class="text-xs text-muted">&lpar;{date}&rpar;</p>{/if}
         </div>
 
-        <p class="text-muted">#{note.id}</p>
+        {#if !isPinned}
+          <p class="text-muted">#{note.id}</p>
+        {/if}
       </a>
     {/snippet}
 
     {#if pinned}
       <div class="w-full space-x-1">
         <p class="text-sm text-muted">pinned</p>
-        {@render noteCard(pinned)}
+        {@render noteCard(pinned, true)}
       </div>
     {/if}
 
     <Paginator {pages} bind:page={pageNo} />
 
     {#each notes as note, i}
-      {@render noteCard(note, true)}
+      {@render noteCard(note)}
     {/each}
   {/if}
 </div>
