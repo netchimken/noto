@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { env } from '$env/dynamic/public';
   import { initAPI } from '$lib/api/client';
   import Actionbar from '$lib/components/Actionbar.svelte';
   import Navbar from "$lib/components/Navbar.svelte";
@@ -57,7 +58,7 @@
   />
 </Navbar>
 
-{#if !author}
+{#if !author && env.PUBLIC_ENABLE_HOME}
 
   <div class="pt-[25vh] px-8 space-y-1.5 text-center">
     <h1 class="text-xl">Welcome to <b>Noto</b></h1>
