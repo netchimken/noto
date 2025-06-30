@@ -58,7 +58,7 @@
   />
 </Navbar>
 
-{#if !author && env.PUBLIC_ENABLE_HOME}
+{#if !author || !env.PUBLIC_ENABLE_HOME}
 
   <div class="pt-[25vh] px-8 space-y-1.5 text-center">
     <h1 class="text-xl">Welcome to <b>Noto</b></h1>
@@ -96,7 +96,7 @@
     </p>
   </div>
 
-{:else}
+{:else if env.PUBLIC_ENABLE_HOME}
 
   <div class="flex flex-col items-center">
     {#if !lastNoteId}
