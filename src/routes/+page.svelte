@@ -15,31 +15,33 @@
   let author = $derived(app().author);
   let email = $state<string | 1 | 0>(0);
 
-  // let notes = $state<InferResponseType<typeof api.note.list.$post>['notes']>([]);
-  // let fetching = $state(false);
-  // let lastNoteId = $state<number>();
+  let notes = $state<InferResponseType<typeof api.note.list.$post>['notes']>([]);
+  let fetching = $state(false);
+  let lastNoteId = $state<number>();
 
-  // const getNotes = async () => {
-  //   fetching = true
+  const getNotes = async () => {
+    fetching = true
 
-  //   const res = await api.note.list.$post({ json: { 
-  //     noteId: lastNoteId ? lastNoteId : undefined 
-  //   }});
-  //   if (!res.ok) {
-  //     fetching = false;
-  //     return alert("failed to get notes");
-  //   }
+    const res = await api.note.list.$post({ json: { 
+      noteId: lastNoteId ? lastNoteId : undefined 
+    }});
+    if (!res.ok) {
+      fetching = false;
+      return alert("failed to get notes");
+    }
 
-  //   const data = await res.json();
-  //   notes.push(...data.notes);
+    const data = await res.json();
+    notes.push(...data.notes);
 
-  //   const lastNote = notes.at(-1);
-  //   if (lastNote) lastNoteId = lastNote.id; 
+    const lastNote = notes.at(-1);
+    if (lastNote) lastNoteId = lastNote.id; 
 
-  //   fetching = false;
-  // }
+    fetching = false;
+  }
 
-  // onMount(async () => await getNotes());
+  if (env.PUBLIC_ENABLE_HOME) {
+    onMount(async () => await getNotes());
+  }
 </script>
 
 <svelte:head>
@@ -58,45 +60,43 @@
   />
 </Navbar>
 
-<div class="pt-[25vh] px-8 space-y-1.5 text-center">
-  <h1 class="text-xl">Welcome to <b>Noto</b></h1>
-  <p class="text-muted">a semi-private "blogging" site</p>
-  <br>
-  <p>
-    want access?
-    {#if email}
+{#if !author || !env.PUBLIC_ENABLE_HOME}
 
-      <span class="text-muted">
-        {#if email === 1}
-          ...
-        {:else}
-          {email}
-        {/if}
-      </span>
+  <div class="pt-[25vh] px-8 space-y-1.5 text-center">
+    <h1 class="text-xl">Welcome to <b>Noto</b></h1>
+    <p class="text-muted">a semi-private "blogging" site</p>
+    <br>
+    <p>
+      want access?
+      {#if email}
 
-    {:else}
+        <span class="text-muted">
+          {#if email === 1}
+            ...
+          {:else}
+            {email}
+          {/if}
+        </span>
 
-      <button 
-        class="text-info cursor-pointer" 
-        title="reveal email"
-        onclick={async () => {
-          email = 1;
-          const res = await api.contact.$get();
-          
-          if (res.ok) email = (await res.json()).email ?? 0;
-          else email = 0;
-        }}
-      >
-        shoot me an email :&rsqb;
-      </button>
+      {:else}
 
-    {/if}
-  </p>
-</div>
+        <button 
+          class="text-info cursor-pointer" 
+          title="reveal email"
+          onclick={async () => {
+            email = 1;
+            const res = await api.contact.$get();
+            
+            if (res.ok) email = (await res.json()).email ?? 0;
+            else email = 0;
+          }}
+        >
+          shoot me an email :&rsqb;
+        </button>
 
-<!-- {#if !author || !env.PUBLIC_ENABLE_HOME}
-
-  
+      {/if}
+    </p>
+  </div>
 
 {:else if env.PUBLIC_ENABLE_HOME}
 
@@ -118,4 +118,4 @@
     {/if}
   </div>
 
-{/if} -->
+{/if}
