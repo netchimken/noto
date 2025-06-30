@@ -73,7 +73,14 @@
 
     @apply prose-headings:text-base;
     @apply prose-p:text-base prose-p:m-0;
-    @apply prose-a:text-info prose-a:no-underline prose-a:hover:underline;
+    @apply 
+      prose-a:text-info 
+      prose-a:no-underline 
+      prose-a:hover:underline
+
+      prose-a:[&.tag]:text-muted
+      prose-a:[&.tag]:hover:text-info
+      prose-a:[&.tag]:hover:no-underline;
     @apply prose-li:text-base;
 
     @apply prose-pre:!bg-secondary prose-pre:[&>code]:p-0;

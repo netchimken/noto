@@ -25,3 +25,9 @@ export function populateNote(note: Prisma.NoteGetPayload<{ include: { author: { 
     title: note.content.match(/^(#{1,3}(?!#) [^\s][ \S]*)/)?.at(0)?.replace(/#{1,3}/, '') ?? null
   }
 }
+
+export const TagRegex = /((#[\w-.~]+) )*(#[\w-.~]+)$/g;
+
+export function getTags(content: string) {
+  return (content.match(TagRegex)?.at(0)?.replace('#', '').split(' ') ?? []).map(t => t.replace('#', ''));
+}

@@ -14,15 +14,15 @@
   let author = $derived(app().author);
   let email = $state<string | 1 | 0>(0);
 
-  let notes = $state<InferResponseType<typeof api.note.list.$get>['notes']>([]);
+  let notes = $state<InferResponseType<typeof api.note.list.$post>['notes']>([]);
   let fetching = $state(false);
   let lastNoteId = $state<number>();
 
   const getNotes = async () => {
     fetching = true
 
-    const res = await api.note.list.$get({ query: { 
-      noteId: lastNoteId ? '' + lastNoteId : undefined 
+    const res = await api.note.list.$post({ json: { 
+      noteId: lastNoteId ? lastNoteId : undefined 
     }});
     if (!res.ok) {
       fetching = false;
@@ -107,7 +107,7 @@
 
       <div class="max-w-[560px] max-h-[80%] w-full flex flex-col items-center space-y-8 py-8">
         {#each notes as note}
-          <NotePanel {note} showName />
+          <NotePanel {note} showName showTags />
         {/each}
       </div>
 

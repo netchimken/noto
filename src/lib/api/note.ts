@@ -3,17 +3,20 @@ import { Hono } from 'hono';
 import { z } from 'zod';
 import Guards from './util/guards';
 import prisma from '$lib/prisma';
-import { cleanAuthor, populateNote } from './util/parsers';
+import { cleanAuthor, getTags, populateNote } from './util/parsers';
 
 
 const listNotesSchema = z.object({
-  authorId: z.coerce.number().optional(),
+  authorId: z.number().optional(),
   authorName: z.string().optional(),
-  noteId: z.coerce.number().optional(),
+  noteId: z.number().optional(),
   orderBy: z.enum(['asc', 'desc']).optional(),
-  tags: z.array(z.string()).optional(),
-  count: z.coerce.number().min(1).max(50).default(25),
-  page: z.coerce.number().positive().default(1),
+  tags: z.array(z.tuple([
+    z.enum(['equals', 'hasEvery', 'hasSome', 'isEmpty', '!equals', '!hasEvery']),
+    z.array(z.string()).nullable().or(z.boolean()),
+  ])).optional(),
+  count: z.number().min(1).max(50).default(25),
+  page: z.number().positive().default(1),
 });
 
 const noteBodySchema = z.object({
@@ -26,8 +29,8 @@ const noteQuerySchema = z.object({
 
 const Note = new Hono()
 
-  .get('/list',
-    zValidator('query', listNotesSchema),
+  .post('/list',
+    zValidator('json', listNotesSchema),
     async (c) => {
       const {
         authorId,
@@ -37,7 +40,7 @@ const Note = new Hono()
         tags,
         count,
         page
-      } = c.req.valid('query');
+      } = c.req.valid('json');
 
       const availableNoteCount = await prisma.note.count({
         where: {
@@ -45,7 +48,14 @@ const Note = new Hono()
             id: authorId,
             name: authorName
           },
-          tags: tags ? { hasEvery: tags } : tags
+          OR: tags
+            ? tags.map(t => (
+              t[0].startsWith('!')
+                ? { NOT: { tags: { [t[0].replace('!', '')]: t[1] } } }
+                : { tags: { [t[0]]: t[1] } }
+            )
+            )
+            : undefined,
         },
         orderBy: { id: orderBy ?? "desc" },
         cursor: noteId
@@ -63,7 +73,14 @@ const Note = new Hono()
             id: authorId,
             name: authorName
           },
-          tags: tags ? { hasEvery: tags } : tags
+          OR: tags
+            ? tags.map(t => (
+              t[0].startsWith('!')
+                ? { NOT: { tags: { [t[0].replace('!', '')]: t[1] } } }
+                : { tags: { [t[0]]: t[1] } }
+            )
+            )
+            : undefined,
         },
         include: {
           author: {
@@ -148,7 +165,7 @@ const Note = new Hono()
         data: {
           author: { connect: { id } },
           content,
-          tags: content.split(/[\r\n]/).at(-1)?.match(/#[\w-.]+/) ?? []
+          tags: getTags(content)
         },
         include: {
           author: {
@@ -179,6 +196,7 @@ const Note = new Hono()
         where: { id: noteId },
         data: {
           content,
+          tags: getTags(content),
           updatedAt: new Date()
         },
         include: {

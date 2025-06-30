@@ -25,7 +25,7 @@
 
 <Navbar
   title={note.author.name}
-  href={"/~" + note.author}
+  href={"/~" + note.author.name}
 >
   <p class="text-xs text-muted" title={note.updatedAt ? `edited on ${formatDate(note.updatedAt)}` : undefined}>
     &lpar;{formatDate(note.createdAt)}{note.updatedAt ? ' - edited' : ''}&rpar;
@@ -71,4 +71,4 @@
   {/if}
 </Navbar>
 
-<Markdown class="max-w-[560px] w-[100%]" content={note.content} />
+<Markdown class="max-w-[560px] w-[100%]" content={note.content} tags={true} />

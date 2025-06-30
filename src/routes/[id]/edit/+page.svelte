@@ -45,6 +45,7 @@
 
     let content = e.formData.get('content');
     if (!content || typeof content !== 'string') return;
+    if (data.note.content === value) return alert("content was not modified");
 
     disabled = true;
 

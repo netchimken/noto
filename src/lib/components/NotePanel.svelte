@@ -7,11 +7,12 @@
   import sanitize from 'sanitize-html';
 
   interface Props {
-    note: ArrayType<InferResponseType<APIClient['note']['list']['$get']>['notes']>
+    note: ArrayType<InferResponseType<APIClient['note']['list']['$post']>['notes']>
     showName?: boolean
+    showTags?: boolean
   }
 
-  let { note, showName }: Props = $props();
+  let { note, showName, showTags }: Props = $props();
   let date = $derived(formatDate(note.createdAt));
 
   const parseTitle = (title: string) => {
@@ -38,8 +39,22 @@
     <p class="markdown w-full pr-6 group-hover:underline text-ellipsis overflow-hidden whitespace-nowrap">
       {@html note.title ? parseTitle(note.title) : date}
     </p>
-    <p class="text-xs text-muted">{#if showName}{note.author.name}{/if} {#if note.title}&lpar;{date}&rpar;{/if}</p>
+    
+    {#if showName || note.title}
+      <p class="text-xs text-muted">
+        {#if showName}{note.author.name}{/if}
+        {#if note.title}&lpar;{date}&rpar;{/if}
+      </p>
+    {/if}
   </div>
 
-  <p class="text-muted">#{note.id}</p>
+  <div class="w-fit text-right">
+    <p class="text-muted">#{note.id}</p>
+
+    {#if showTags && note.tags.length > 0}
+      <p class="text-xs text-muted text-nowrap overflow-hidden text-ellipsis">
+        #{note.tags.filter(t => !t.startsWith('~'))[0]}
+      </p>
+    {/if}
+  </div>
 </a>
