@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { page as pageState } from '$app/state';
   import { initAPI } from '$lib/api/client/index.js';
   import Actionbar from "$lib/components/Actionbar.svelte";
   import Navbar from "$lib/components/Navbar.svelte";
@@ -30,7 +29,8 @@
           ['equals', null],
           ['equals', []],
           ['hasEvery', ['~me']]
-        ]
+        ],
+      full: true
     })
     .then(p => p 
       ? page = { 
@@ -69,5 +69,5 @@
 <PostSeeker {page} {pageNo} showTags />
 
 {#if data.name === me?.name}
-  <button class="text-sm" onclick={() => special = !special}>[ {special ? 'hide' : 'show'} special ]</button>
+  <button class="text-sm" onclick={() => special = !special}>[ {special ? 'hide' : 'show'} tagged ]</button>
 {/if}

@@ -17,6 +17,7 @@
 
   let app = $state<AppContextData>({
     author: null,
+    lastPage: null
   });
   setAppContext(() => app);
 

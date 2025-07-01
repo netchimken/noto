@@ -1,13 +1,12 @@
 <script lang="ts">
-  import type { APIClient } from '$lib/api/client';
+  import type { ClientNote } from '$lib/api/util/parsers';
   import { formatDate } from '$lib/util/date';
-  import type { ArrayType } from '$lib/util/helpers';
-  import type { InferResponseType } from 'hono';
+  import type { Needy } from '$lib/util/helpers';
   import { Marked } from 'marked';
   import sanitize from 'sanitize-html';
 
   interface Props {
-    note: ArrayType<InferResponseType<APIClient['note']['list']['$post']>['notes']>
+    note: Needy<ClientNote, 'createdAt' | 'tags' | 'author.id' | 'author.name'>
     showName?: boolean
     showTags?: boolean
   }
@@ -32,27 +31,27 @@
 </script>
 
 <a
-  class="w-full flex flex-row justify-between items-center group"
+  class="w-full flex flex-col justify-between items-center group"
   href={"/" + note.id}
 >
-  <div class="w-[90%] flex flex-col">
-    <p class="markdown w-full pr-6 group-hover:underline text-ellipsis overflow-hidden whitespace-nowrap">
+  <div class="w-full flex flex-row justify-between items-center">
+    <p class="w-fit markdown pr-6 group-hover:underline text-ellipsis text-nowrap overflow-hidden">
       {@html note.title ? parseTitle(note.title) : date}
     </p>
     
+    <p class="text-muted">#{note.id}</p>
+  </div>
+
+  <div class="w-full flex flex-row justify-between items-center text-right space-x-5">
     {#if showName || note.title}
-      <p class="text-xs text-muted">
+      <p class="w-full text-xs text-muted text-left text-nowrap">
         {#if showName}{note.author.name}{/if}
         {#if note.title}&lpar;{date}&rpar;{/if}
       </p>
     {/if}
-  </div>
-
-  <div class="w-fit text-right">
-    <p class="text-muted">#{note.id}</p>
 
     {#if showTags && note.tags.length > 0}
-      <p class="text-xs text-muted text-nowrap overflow-hidden text-ellipsis">
+      <p class="w-full text-xs text-muted text-right text-ellipsis text-nowrap overflow-hidden">
         #{note.tags.filter(t => !t.startsWith('~'))[0]}
       </p>
     {/if}

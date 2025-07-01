@@ -1,7 +1,5 @@
-import { goto } from '$app/navigation';
 import type { API } from '$lib/api';
-import { Store } from '$lib/util/store';
-import { hc, type ClientResponse } from 'hono/client';
+import { hc } from 'hono/client';
 
 // reference: https://dev.to/bop/using-hono-with-sveltekit-full-type-safety-with-rpc-2h7
 

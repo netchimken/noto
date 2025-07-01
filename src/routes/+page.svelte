@@ -1,12 +1,12 @@
 <script lang="ts">
   import { env } from '$env/dynamic/public';
   import { initAPI } from '$lib/api/client';
+  import type { ClientNote } from '$lib/api/util/parsers';
   import Actionbar from '$lib/components/Actionbar.svelte';
   import Navbar from "$lib/components/Navbar.svelte";
   import NotePanel from '$lib/components/NotePanel.svelte';
   import { getApp } from '$lib/util/app';
   import { clientEnv } from '$lib/util/env';
-  import type { InferResponseType } from 'hono';
   import { onMount } from 'svelte';
 
   const api = initAPI(fetch);
@@ -15,7 +15,7 @@
   let author = $derived(app().author);
   let email = $state<string | 1 | 0>(0);
 
-  let notes = $state<InferResponseType<typeof api.note.list.$post>['notes']>([]);
+  let notes = $state<ClientNote[]>([]);
   let fetching = $state(false);
   let lastNoteId = $state<number>();
 
@@ -98,7 +98,7 @@
     </p>
   </div>
 
-{:else if env.PUBLIC_ENABLE_HOME}
+{:else}
 
   <div class="flex flex-col items-center">
     {#if !lastNoteId}

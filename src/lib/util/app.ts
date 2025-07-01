@@ -9,6 +9,10 @@ export const AppContextDataSchema = z.object({
     pinned: z.coerce.number().nullable(),
     admin: z.boolean().nullable(),
     joinedAt: z.coerce.date(),
+  }).nullable(),
+  lastPage: z.object({
+    pageNo: z.number(),
+    lastNoteId: z.number(),
   }).nullable()
 });
 

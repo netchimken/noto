@@ -4,7 +4,7 @@ import { z } from "zod";
 import Guards from "./util/guards";
 import prisma from "$lib/prisma";
 import { generateSecret } from "./util/auth";
-import { cleanAuthor, NameRegex, populateNote } from "./util/parsers";
+import { toClientAuthor, NameRegex, toClientNote } from "./util/parsers";
 
 const idSchema = z.object({
   id: z.string()
@@ -32,7 +32,7 @@ const Author = new Hono()
 
     .get("/", async (c) => {
       const author = c.get("author");
-      return c.json(cleanAuthor(author));
+      return c.json(toClientAuthor(author));
     })
 
     .patch("/name",
@@ -96,7 +96,7 @@ const Author = new Hono()
         },
       });
 
-      return c.json(cleanAuthor(author));
+      return c.json(toClientAuthor(author));
     }
   )
 
@@ -111,7 +111,7 @@ const Author = new Hono()
       });
       if (!author) return c.text('author not found', 404);
 
-      return c.json(cleanAuthor(author));
+      return c.json(toClientAuthor(author));
     }
   );
 

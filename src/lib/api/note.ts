@@ -3,7 +3,7 @@ import { Hono } from 'hono';
 import { z } from 'zod';
 import Guards from './util/guards';
 import prisma from '$lib/prisma';
-import { cleanAuthor, getTags, populateNote } from './util/parsers';
+import { toClientAuthor, getTags, toClientNote, clientNoteInclude, filterClientNote } from './util/parsers';
 
 
 const listNotesSchema = z.object({
@@ -17,6 +17,7 @@ const listNotesSchema = z.object({
   ])).optional(),
   count: z.number().min(1).max(50).default(25),
   page: z.number().positive().default(1),
+  full: z.boolean().optional()
 });
 
 const noteBodySchema = z.object({
@@ -39,7 +40,8 @@ const Note = new Hono()
         orderBy,
         tags,
         count,
-        page
+        page,
+        full
       } = c.req.valid('json');
 
       const availableNoteCount = await prisma.note.count({
@@ -109,6 +111,7 @@ const Note = new Hono()
         : await prisma.author.findUnique({
           where: authorId ? { id: authorId } : { name: authorName }
         });
+      if (authorId && !author) return c.text("author not found", 404);
 
       const pinned = !author?.pinned
         ? null
@@ -124,9 +127,13 @@ const Note = new Hono()
         });
 
       return c.json({
-        author: author ? cleanAuthor(author) : null,
-        pinned: pinned ? populateNote(pinned) : null,
-        notes: notes.map(n => populateNote(n)).filter(n => n.id !== author?.pinned),
+        author: author ? toClientAuthor(author) : null,
+        pinned: pinned
+          ? toClientNote(pinned)
+          : null,
+        notes: notes
+          .map(n => toClientNote(n))
+          .filter(n => n.id !== author?.pinned),
         pages: pages
       });
     }
@@ -149,7 +156,9 @@ const Note = new Hono()
       });
       if (!note) return c.text("note not found", 404);
 
-      return c.json(populateNote(note));
+      return c.json(
+        toClientNote(note)
+      );
     }
   )
 
@@ -176,7 +185,7 @@ const Note = new Hono()
         },
       });
 
-      return c.json(populateNote(note));
+      return c.json(toClientNote(note));
     }
   )
 
@@ -208,7 +217,7 @@ const Note = new Hono()
         },
       });
 
-      return c.json(populateNote(updatedNote));
+      return c.json(toClientNote(updatedNote));
     }
   )
 

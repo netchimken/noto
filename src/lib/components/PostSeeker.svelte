@@ -4,15 +4,9 @@
   import NotePanel from './NotePanel.svelte';
   import Paginator from "./Paginator.svelte";
   import { Marked } from 'marked';
-  import type { InferResponseType } from 'hono';
-  import type { APIClient } from '$lib/api/client';
-  import type { Optional } from '$lib/util/helpers';
 
   interface Props {
-    page: Optional<Optional<InferResponseType<APIClient['note']['list']['$post']
-      >, 'author'
-      >, 'pinned'
-    >
+    page: any
     pageNo: number
     showNames?: boolean
     showTags?: boolean

@@ -3,7 +3,7 @@ import z from "zod";
 
 export const NameRegex = /^([\w]+)$/;
 
-const CleanAuthorSchema = z.object({
+const ClientAuthorSchema = z.object({
   id: z.number(),
   email: z.string().email(),
   name: z.string(),
@@ -12,17 +12,79 @@ const CleanAuthorSchema = z.object({
   joinedAt: z.date(),
 });
 
-export function cleanAuthor(author: Author) {
-  return CleanAuthorSchema.parse(author);
+export type ClientAuthor = z.infer<typeof ClientAuthorSchema>;
+
+export function toClientAuthor(author: Author) {
+  return ClientAuthorSchema.parse(author);
 }
 
-export function populateNote(note: Prisma.NoteGetPayload<{ include: { author: { select: { name: true } } } }>) {
+export interface ClientNote {
+  id: number
+
+  title: string | null
+  content: string
+  tags: string[]
+
+  createdAt: string
+  updatedAt?: string | null
+
+  author: {
+    id: number
+    name: string
+  }
+}
+
+export const clientNoteInclude = z.object({
+  title: z.boolean().optional(),
+  content: z.boolean().optional(),
+  tags: z.boolean().optional(),
+
+  updatedAt: z.boolean().optional(),
+
+  author: z.boolean().or(z.object({
+    id: z.boolean(),
+    name: z.boolean(),
+  })).optional()
+}).optional();
+
+type ClientNoteInclude = z.infer<typeof clientNoteInclude>;
+
+export function toClientNote(
+  note: Prisma.NoteGetPayload<{ include: { author: { select: { name: true } } } }>,
+) {
   return {
-    ...note,
+    id: note.id,
+
+    title: note.content.match(/^(#{1,3}(?!#) [^\s][ \S]*)/)?.at(0)?.replace(/#{1,3}/, '') ?? null,
+    content: note.content,
+    tags: note.tags,
+
+    createdAt: note.createdAt,
+    updatedAt: note.updatedAt,
+
     author: {
+      id: note.authorId,
       name: note.author.name
     },
-    title: note.content.match(/^(#{1,3}(?!#) [^\s][ \S]*)/)?.at(0)?.replace(/#{1,3}/, '') ?? null
+  }
+}
+
+export function filterClientNote(
+  note: ReturnType<typeof toClientNote>
+) {
+  return {
+    id: note.id,
+
+    title: note.content.match(/^(#{1,3}(?!#) [^\s][ \S]*)/)?.at(0)?.replace(/#{1,3}/, '') ?? null,
+    tags: note.tags,
+
+    createdAt: note.createdAt,
+    updatedAt: note.updatedAt,
+
+    author: {
+      id: note.author.id,
+      name: note.author.name
+    },
   }
 }
 

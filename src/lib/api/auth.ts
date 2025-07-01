@@ -12,7 +12,7 @@ import {
   getLoginCode,
 } from "./util/auth";
 import Guards from "./util/guards";
-import { cleanAuthor } from "./util/parsers";
+import { toClientAuthor } from "./util/parsers";
 import { setCookie } from 'hono/cookie';
 
 const loginSchema = z.object({
@@ -108,7 +108,7 @@ const Auth = new Hono()
       setCookie(c, 'noto-token', token, { expires: new Date(expMilliseconds) });
 
       return c.json({
-        author: cleanAuthor(author),
+        author: toClientAuthor(author),
       });
     } catch {
       return c.text("verification failed", 401);
