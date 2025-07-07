@@ -24,7 +24,7 @@
     element.style.height = "";
     element.style.height = element.scrollHeight + "px";
 
-    words = element.value.split(/[\s]/).filter((p) => p.trim() !== "").length;
+    words = element.value.match(/(\w)+/g)?.length || 0;
   };
 
   onMount(() => {
