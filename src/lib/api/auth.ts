@@ -102,6 +102,15 @@ const Auth = new Hono()
 
       const token = generateSecret(32);
 
+      await prisma.author.update({
+        where: { id: author.id },
+        data: {
+          sessions: {
+            create: { token }
+          }
+        }
+      });
+
       setCookie(c, 'noto-token', token, { expires: new Date(expMilliseconds) });
 
       return c.json({

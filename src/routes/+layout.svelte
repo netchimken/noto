@@ -23,13 +23,15 @@
 
   const checkAuth = async () => {
     const res = await api.author.me.$get();
+    const pathname = page.url.pathname;
 
     if (res?.ok) {
       app.author = AppContextDataSchema.shape.author.parse(await res.json());
 
-      if (page.url.pathname === "/login")
+      if (pathname === "/login")
         goto("/compose", { replaceState: true });
-      return;
+    } else {
+      if (["/compose", "/settings"].includes(pathname)) goto("/login");
     }
   };
 
