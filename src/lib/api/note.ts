@@ -3,7 +3,7 @@ import { Hono } from 'hono';
 import { z } from 'zod';
 import Guards from './util/guards';
 import prisma from '$lib/prisma';
-import { toClientAuthor, getTags, toClientNote, clientNoteInclude, filterClientNote } from './util/parsers';
+import { toClientAuthor, getTags, toClientNote, getTitle, toSimpleClientNote } from './util/parsers';
 
 
 const listNotesSchema = z.object({
@@ -16,8 +16,7 @@ const listNotesSchema = z.object({
     z.array(z.string()).nullable().or(z.boolean()),
   ])).optional(),
   count: z.number().min(1).max(50).default(25),
-  page: z.number().positive().default(1),
-  full: z.boolean().optional()
+  page: z.number().positive().default(1)
 });
 
 const noteBodySchema = z.object({
@@ -41,7 +40,6 @@ const Note = new Hono()
         tags,
         count,
         page,
-        full
       } = c.req.valid('json');
 
       const availableNoteCount = await prisma.note.count({
@@ -91,6 +89,7 @@ const Note = new Hono()
             }
           }
         },
+        omit: { content: true },
         orderBy: { id: orderBy ?? "desc" },
         skip: page > 1
           ? (page <= pages
@@ -129,10 +128,10 @@ const Note = new Hono()
       return c.json({
         author: author ? toClientAuthor(author) : null,
         pinned: pinned
-          ? toClientNote(pinned)
+          ? toSimpleClientNote(pinned)
           : null,
         notes: notes
-          .map(n => toClientNote(n))
+          .map(n => toSimpleClientNote(n))
           .filter(n => n.id !== author?.pinned),
         pages: pages
       });
@@ -173,6 +172,7 @@ const Note = new Hono()
       const note = await prisma.note.create({
         data: {
           author: { connect: { id } },
+          title: getTitle(content),
           content,
           tags: getTags(content)
         },
@@ -204,6 +204,7 @@ const Note = new Hono()
       const updatedNote = await prisma.note.update({
         where: { id: noteId },
         data: {
+          title: getTitle(content),
           content,
           tags: getTags(content),
           updatedAt: new Date()

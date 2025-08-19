@@ -23,14 +23,12 @@ namespace Guards {
       });
       if (!session) return c.text("invalid authorization", 401);
 
-      verifySession(token);
-
       c.set('author', session.author);
       c.set('token', token);
 
       await next();
     } catch {
-      return c.text("invalid authorization");
+      return c.text("invalid authorization", 401);
     }
   });
 }

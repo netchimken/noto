@@ -4,15 +4,14 @@
   import Actionbar from "$lib/components/Actionbar.svelte";
   import Composer from '$lib/components/Composer.svelte';
   import Navbar from "$lib/components/Navbar.svelte";
-  import { getApp } from "$lib/util/app";
+  import { app } from '$lib/util/app.svelte.js';
   import { clientEnv } from '$lib/util/env';
 
   let { data } = $props();
 
   const api = initAPI(fetch);
-  const app = getApp();
 
-  let me = $derived(app().author);
+  let me = $derived(app.author);
   let value = $state(data.note.content);
   let disabled = $state(false);
 

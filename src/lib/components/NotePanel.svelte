@@ -1,12 +1,18 @@
 <script lang="ts">
-  import type { ClientNote } from '$lib/api/util/parsers';
   import { formatDate } from '$lib/util/date';
-  import type { Needy } from '$lib/util/helpers';
   import { Marked } from 'marked';
   import sanitize from 'sanitize-html';
 
   interface Props {
-    note: Needy<ClientNote, 'createdAt' | 'tags' | 'author.id' | 'author.name'>
+    note: {
+      id: number
+      author: {
+        name: string
+      }
+      title: string | null
+      tags: string[]
+      createdAt: string
+    }
     showName?: boolean
     showTags?: boolean
   }

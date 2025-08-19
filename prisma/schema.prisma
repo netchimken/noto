@@ -15,6 +15,7 @@ datasource db {
 
 model Note {
   id          Int       @id @default(autoincrement())
+  title       String?
   content     String
   tags        String[]
 

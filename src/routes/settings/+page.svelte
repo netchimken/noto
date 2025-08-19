@@ -3,12 +3,11 @@
   import { initAPI } from '$lib/api/client';
   import Actionbar from '$lib/components/Actionbar.svelte';
   import Navbar from "$lib/components/Navbar.svelte";
-  import { getApp } from '$lib/util/app';
+  import { app } from '$lib/util/app.svelte';
   import { clientEnv } from '$lib/util/env';
 
   const api = initAPI(fetch);
-  const app = getApp();
-  let author = $derived(app().author);
+  let author = $derived(app.author);
 </script>
 
 <svelte:head>
@@ -51,7 +50,7 @@
               const res = await api.auth.logout.$delete();
               if (!res.ok) return alert(`${res.status} - ${res.statusText}`);
 
-              app().author = null;
+              app.author = null;
               goto('/');
             }
           }}

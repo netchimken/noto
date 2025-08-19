@@ -2,11 +2,7 @@
   import "../app.css";
 
   import { afterNavigate, goto } from "$app/navigation";
-  import {
-    AppContextDataSchema,
-    setAppContext,
-    type AppContextData,
-  } from "$lib/util/app";
+  import { app, AppDataSchema } from "$lib/util/app.svelte";
   import { initAPI } from "$lib/api/client";
   import { page } from "$app/state";
   import { onMount } from "svelte";
@@ -15,18 +11,12 @@
 
   const api = initAPI(fetch);
 
-  let app = $state<AppContextData>({
-    author: null,
-    lastPage: null
-  });
-  setAppContext(() => app);
-
   const checkAuth = async () => {
     const res = await api.author.me.$get();
     const pathname = page.url.pathname;
 
     if (res?.ok) {
-      app.author = AppContextDataSchema.shape.author.parse(await res.json());
+      app.author = AppDataSchema.shape.author.parse(await res.json());
 
       if (pathname === "/login")
         goto("/compose", { replaceState: true });

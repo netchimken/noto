@@ -2,11 +2,9 @@
   import { page } from '$app/state';
   import Actionbar from '$lib/components/Actionbar.svelte';
   import Navbar from '$lib/components/Navbar.svelte';
-  import { getApp } from '$lib/util/app';
+  import { app } from '$lib/util/app.svelte';
 
-  const app = getApp();
-
-  let me = $derived(app().author);
+  let me = $derived(app.author);
 </script>
 
 <Navbar title={me?.name} href={me?.name ? "/~" + me.name : undefined}>

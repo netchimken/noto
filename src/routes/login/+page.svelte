@@ -5,11 +5,10 @@
   import Actionbar from '$lib/components/Actionbar.svelte';
   import CodeInput from '$lib/components/CodeInput.svelte';
   import Navbar from "$lib/components/Navbar.svelte";
-  import { getApp, AppContextDataSchema } from '$lib/util/app';
+  import { app, AppDataSchema } from '$lib/util/app.svelte';
   import { clientEnv } from '$lib/util/env';
 
   const api = initAPI(fetch);
-  const app = getApp();
 
   let fetching = $state(false);
   let verifying = $state(false);
@@ -85,7 +84,7 @@
       else {
         const data = await res.json();
         
-        app().author = AppContextDataSchema.shape.author.parse(data.author);
+        app.author = AppDataSchema.shape.author.parse(data.author);
 
         goto('/compose', { replaceState: true });
       }

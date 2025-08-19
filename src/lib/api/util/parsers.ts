@@ -1,3 +1,4 @@
+import type { Lazy } from '$lib/util/helpers';
 import type { Author, Note, Prisma } from "@prisma/client";
 import z from "zod";
 
@@ -34,20 +35,26 @@ export interface ClientNote {
   }
 }
 
-export const clientNoteInclude = z.object({
-  title: z.boolean().optional(),
-  content: z.boolean().optional(),
-  tags: z.boolean().optional(),
+export type SimpleClientNote = Omit<ClientNote, 'content'>;
 
-  updatedAt: z.boolean().optional(),
+export function toSimpleClientNote(
+  note: Lazy<Prisma.NoteGetPayload<{ include: { author: { select: { name: true } } } }>, 'content'>,
+) {
+  return {
+    id: note.id,
 
-  author: z.boolean().or(z.object({
-    id: z.boolean(),
-    name: z.boolean(),
-  })).optional()
-}).optional();
+    title: note.title,
+    tags: note.tags,
 
-type ClientNoteInclude = z.infer<typeof clientNoteInclude>;
+    createdAt: note.createdAt,
+    updatedAt: note.updatedAt,
+
+    author: {
+      id: note.authorId,
+      name: note.author.name
+    },
+  }
+}
 
 export function toClientNote(
   note: Prisma.NoteGetPayload<{ include: { author: { select: { name: true } } } }>,
@@ -55,7 +62,7 @@ export function toClientNote(
   return {
     id: note.id,
 
-    title: note.content.match(/^(#{1,3}(?!#) [^\s][ \S]*)/)?.at(0)?.replace(/#{1,3}/, '') ?? null,
+    title: note.title,
     content: note.content,
     tags: note.tags,
 
@@ -75,7 +82,7 @@ export function filterClientNote(
   return {
     id: note.id,
 
-    title: note.content.match(/^(#{1,3}(?!#) [^\s][ \S]*)/)?.at(0)?.replace(/#{1,3}/, '') ?? null,
+    title: note.content?.match(/^(#{1,3}(?!#) [^\s][ \S]*)/)?.at(0)?.replace(/#{1,3}/, '') ?? null,
     tags: note.tags,
 
     createdAt: note.createdAt,
@@ -92,4 +99,8 @@ export const TagRegex = /((#[\w-.~]+) )*(#[\w-.~]+)$/g;
 
 export function getTags(content: string) {
   return (content.match(TagRegex)?.at(0)?.replace('#', '').split(' ') ?? []).map(t => t.replace('#', ''));
+}
+
+export function getTitle(content: string) {
+  return content.match(/^(#{1,3}(?!#) [^\s][ \S]*)/)?.at(0)?.replace(/#{1,3}/, '') ?? undefined;
 }

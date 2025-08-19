@@ -3,17 +3,14 @@
   import Actionbar from "$lib/components/Actionbar.svelte";
   import Navbar from "$lib/components/Navbar.svelte";
   import PostSeeker from '$lib/components/PostSeeker.svelte';
-  import {
-    getApp,
-  } from "$lib/util/app.js";
+  import { app } from '$lib/util/app.svelte.js';
   import { clientEnv } from '$lib/util/env.js';
   import { getPage } from '$lib/util/notes.js';
   
   const api = initAPI(fetch);
   let { data } = $props();
 
-  const app = getApp();
-  const me = $derived(app().author);
+  const me = $derived(app.author);
 
   let page = $derived(data.page);
   let count = $derived(data.count);

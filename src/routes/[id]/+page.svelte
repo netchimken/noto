@@ -4,19 +4,18 @@
   import Actionbar, { type Action } from "$lib/components/Actionbar.svelte";
   import Markdown from '$lib/components/Markdown.svelte';
   import Navbar from "$lib/components/Navbar.svelte";
-  import { getApp } from "$lib/util/app";
+  import { app } from '$lib/util/app.svelte.js';
   import { formatDate } from '$lib/util/date.js';
   import { clientEnv } from '$lib/util/env.js';
   import { concatArr } from '$lib/util/helpers.js';
 
   const api = initAPI(fetch);
-  const app = getApp();
 
   let { data } = $props();
   let id = $derived(data.id);
   let note = $derived(data.note);
 
-  let me = $derived(app().author);
+  let me = $derived(app.author);
 </script>
 
 <svelte:head>

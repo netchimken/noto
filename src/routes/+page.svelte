@@ -1,21 +1,20 @@
 <script lang="ts">
   import { env } from '$env/dynamic/public';
   import { initAPI } from '$lib/api/client';
-  import type { ClientNote } from '$lib/api/util/parsers';
+  import type { ClientNote, SimpleClientNote } from '$lib/api/util/parsers';
   import Actionbar from '$lib/components/Actionbar.svelte';
   import Navbar from "$lib/components/Navbar.svelte";
   import NotePanel from '$lib/components/NotePanel.svelte';
-  import { getApp } from '$lib/util/app';
+  import { app } from '$lib/util/app.svelte';
   import { clientEnv } from '$lib/util/env';
   import { onMount } from 'svelte';
 
   const api = initAPI(fetch);
-  const app = getApp();
 
-  let author = $derived(app().author);
+  let author = $derived(app.author);
   let email = $state<string | 1 | 0>(0);
 
-  let notes = $state<ClientNote[]>([]);
+  let notes = $state<SimpleClientNote[]>([]);
   let fetching = $state(false);
   let lastNoteId = $state<number>();
 
@@ -100,7 +99,7 @@
 
 {:else}
 
-  <div class="flex flex-col items-center">
+  <div class="flex flex-col w-full items-center">
     {#if !lastNoteId}
       <p>loading notes...</p>
     {:else if notes.length === 0}
