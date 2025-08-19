@@ -102,5 +102,5 @@ export function getTags(content: string) {
 }
 
 export function getTitle(content: string) {
-  return content.match(/^(#{1,3}(?!#) [^\s][ \S]*)/)?.at(0)?.replace(/#{1,3}/, '') ?? undefined;
+  return content.match(/^(#{1,3}(?!#) [^\s][ \S]*)/)?.at(0)?.replace(/#{1,3} /, '') ?? undefined;
 }
