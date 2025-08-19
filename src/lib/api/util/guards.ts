@@ -7,7 +7,8 @@ import { getCookie } from 'hono/cookie';
 namespace Guards {
   export const Auth = createMiddleware<{
     Variables: {
-      author: Author
+      author: Author,
+      token: string
     }
   }>(async (c, next) => {
     const authorization = getCookie(c, 'noto-token') ?? c.req.header('Authorization');
@@ -16,14 +17,16 @@ namespace Guards {
     const token = authorization.replace("Bearer ", "");
 
     try {
-      const { id } = decodeSession(token);
+      const session = await prisma.session.findUnique({
+        where: { token },
+        include: { author: true }
+      });
+      if (!session) return c.text("invalid authorization", 401);
 
-      const author = await prisma.author.findUnique({ where: { id } });
-      if (!author) return c.text("invalid authorization", 401);
+      verifySession(token);
 
-      verifySession(token, author.secret);
-
-      c.set('author', author);
+      c.set('author', session.author);
+      c.set('token', token);
 
       await next();
     } catch {

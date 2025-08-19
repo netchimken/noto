@@ -6,9 +6,9 @@ import Note from './note';
 
 const router = new Hono()
 
-  .get('hello', (c) => {
+  .get('ping', (c) => {
     return c.json({
-      message: "Oh yeah"
+      message: "pong!"
     });
   })
 

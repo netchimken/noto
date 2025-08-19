@@ -11,7 +11,7 @@ export function sha256(...values: string[]) {
 }
 
 export function getAuthSecret() {
-  return sha256(env.AUTH_SECRET);
+  return env.AUTH_SECRET;
 }
 
 export function getLoginCode(secret: string, requestedAt: Date) {
@@ -20,8 +20,8 @@ export function getLoginCode(secret: string, requestedAt: Date) {
   return hash.substring(hash.length - 6).toUpperCase();
 }
 
-export function generateSecret() {
-  return randomBytes(16).toString("hex");
+export function generateSecret(bytes: number = 16) {
+  return randomBytes(bytes).toString("hex");
 }
 
 export function generateValidation(
@@ -36,6 +36,7 @@ export function generateValidation(
       exp: Math.floor(expiresAt.getTime() / 1000),
       email,
       requestedAt: requestedAt.getTime(),
+      nonce: generateSecret()
     },
     getAuthSecret(),
   );
@@ -60,8 +61,8 @@ export function decodeSession(token: string) {
   return session;
 }
 
-export function verifySession(token: string, authorSecret: string) {
-  const decoded = jwt.verify(token, getAuthSecret() + authorSecret);
+export function verifySession(token: string) {
+  const decoded = jwt.verify(token, getAuthSecret());
   const session = sessionSchema.parse(decoded);
 
   return session;

@@ -12,31 +12,41 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
 model Note {
-  id         Int       @id @default(autoincrement())
-  content    String
-  tags       String[]
+  id          Int       @id @default(autoincrement())
+  content     String
+  tags        String[]
 
-  createdAt  DateTime  @default(now()) @db.Timestamptz(3)
-  updatedAt  DateTime? @db.Timestamptz(3)
+  createdAt   DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime? @db.Timestamptz(3)
 
-  authorId   Int
-  author     Author    @relation(fields: [authorId], references: [id])
+  authorId    Int
+  author      Author    @relation(fields: [authorId], references: [id], onUpdate: Cascade)
+}
+
+model Session {
+  token       String    @id
+
+  authorId    Int
+  author      Author    @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  createdAt   DateTime  @db.Timestamptz(3)
 }
 
 model Author {
-  id       Int       @id @default(autoincrement())
-  name     String    @unique
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
 
-  notes    Note[]
-  pinned   Int?
+  notes       Note[]
+  pinned      Int?
 
-  joinedAt DateTime  @default(now()) @db.Timestamptz(3)
-  loginAt  DateTime? @db.Timestamptz(3)
+  joinedAt    DateTime  @default(now()) @db.Timestamptz(3)
 
-  email    String?   @unique
-  secret   String    @unique
-  admin    Boolean?
+  email       String?   @unique
+  sessions    Session[]
+  secret      String    @unique
+  admin       Boolean?
 
   @@unique([id, name])
 }
