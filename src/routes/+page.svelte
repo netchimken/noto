@@ -113,7 +113,9 @@
         {/each}
       </div>
 
-      <button class={fetching ? "opacity-0" : ''} onclick={getNotes}>[ load more ]</button>
+      {#if !fetching}
+        <button class="text-sm" onclick={getNotes}>[ load more ]</button>
+      {/if}
     {/if}
   </div>
 
