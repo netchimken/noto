@@ -24,11 +24,46 @@
     />
   </Navbar>
   
-  <div class="max-w-[500px] h-[80vh] w-full flex flex-col items-center space-y-8 py-8">
+  <div class="text-sm max-w-[500px] h-[80vh] w-full flex flex-col items-center space-y-8 py-8">
     <div class="w-full flex flex-row justify-between items-center">
-      <h1 class="text-lg font-semibold">Account</h1>
+      <h1 class="text-xl font-semibold">Account</h1>
 
-      <div class="text-sm">
+      <button
+        onclick={async () => {
+          const yes = confirm("you'll have to sign back in; are you sure?");
+
+          if (yes) {
+            const res = await api.auth.logout.$delete();
+            if (!res.ok) return alert(`${res.status} - ${res.statusText}`);
+
+            app.author = null;
+            goto('/');
+          }
+        }}
+      >[ logout ]</button>
+    </div>
+
+    <div class="w-full flex flex-col space-y-2">
+      <div class="w-full flex flex-row justify-between items-center">
+        <h1 class="font-semibold text-muted">{author.email}</h1>
+
+        <button
+          onclick={async () => {
+            const email = prompt("enter a new email");
+
+            if (email && confirm("change to: " + email)) {
+              const res = await api.author.me.email.$patch({ query: { email } });
+              if (!res.ok) return alert(`${res.status} - ${res.statusText}`);
+
+              if (author) author.email = email;
+            }
+          }}
+        >[ edit email ]</button>
+      </div>
+
+      <div class="w-full flex flex-row justify-between items-center">
+        <h1 class="font-semibold text-muted">{author.name}</h1>
+
         <button
           onclick={async () => {
             const name = prompt("enter a new name");
@@ -41,26 +76,12 @@
             }
           }}
         >[ edit name ]</button>
-
-        <button
-          onclick={async () => {
-            const yes = confirm("this action will log you out on all devices");
-
-            if (yes) {
-              const res = await api.auth.logout.$delete();
-              if (!res.ok) return alert(`${res.status} - ${res.statusText}`);
-
-              app.author = null;
-              goto('/');
-            }
-          }}
-        >[ logout ]</button>
       </div>
     </div>
 
     {#if author.admin}
       <div class="w-full flex flex-row justify-between items-center">
-        <h1 class="text-lg font-semibold">Admin</h1>
+        <h1 class="text-xl font-semibold">Admin</h1>
 
         <div class="text-sm">
           <button

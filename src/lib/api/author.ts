@@ -19,6 +19,10 @@ const nameSchema = z.object({
   name: z.string().regex(NameRegex),
 });
 
+const emailSchema = z.object({
+  email: z.string().email(),
+});
+
 const notesSchema = z
   .object({
     count: z.coerce.number().default(25),
@@ -47,6 +51,21 @@ const Author = new Hono()
         });
 
         return c.text(`updated name: '${oldName}' -> '${author.name}'`);
+      }
+    )
+
+    .patch("/email",
+      zValidator("query", emailSchema),
+      async (c) => {
+        const { id, email: oldEmail } = c.get("author");
+        const { email } = c.req.valid("query");
+
+        const author = await prisma.author.update({
+          where: { id },
+          data: { email },
+        });
+
+        return c.text(`updated name: '${oldEmail}' -> '${author.name}'`);
       }
     )
 
